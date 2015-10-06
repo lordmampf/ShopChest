@@ -27,9 +27,6 @@ import de.epiceric.shopchest.interfaces.Utils;
 import de.epiceric.shopchest.interfaces.utils.Utils_R3;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.sql.SQLite;
-import de.epiceric.shopchest.utils.Metrics;
-import de.epiceric.shopchest.utils.Metrics.Graph;
-import de.epiceric.shopchest.utils.Metrics.Plotter;
 import de.epiceric.shopchest.utils.ShopUtils;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -87,43 +84,6 @@ public class ShopChest extends JavaPlugin {
 			logger.severe("Could not find any Vault dependency!");
 			getServer().getPluginManager().disablePlugin(this);
 			return;
-		}
-
-		try {
-			Metrics metrics = new Metrics(this);
-			Graph shopType = metrics.createGraph("Shop Type");
-
-			shopType.addPlotter(new Plotter("Infinite") {
-
-				@Override
-				public int getValue() {
-					int value = 0;
-
-					for (Shop shop : ShopUtils.getShops()) {
-						if (shop.isInfinite())
-							value++;
-					}
-
-					return value;
-				}
-			});
-
-			shopType.addPlotter(new Plotter("Normal") {
-				@Override
-				public int getValue() {
-					int value = 0;
-					for (Shop shop : ShopUtils.getShops()) {
-						if (!shop.isInfinite())
-							value++;
-					}
-					return value;
-				}
-
-			});
-
-			metrics.start();
-		} catch (IOException e) {
-			logger.severe("Could not submit stats.");
 		}
 
 		reloadConfig();

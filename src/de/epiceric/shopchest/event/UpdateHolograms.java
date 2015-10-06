@@ -17,37 +17,23 @@ public class UpdateHolograms implements Listener {
 
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent e) {
-
 		Player p = e.getPlayer();
 		Location playerLocation = p.getLocation();
-
 		for (Shop shop : ShopUtils.getShops()) {
-
 			if (shop.getHologram() != null) {
-
 				Location shopLocation = shop.getLocation();
-
 				if (playerLocation.getWorld().equals(shopLocation.getWorld())) {
-
 					if (playerLocation.distance(shop.getHologram().getLocation()) <= Config.maximal_distance()) {
-
 						if (!shop.getHologram().isVisible(p)) {
 							shop.getHologram().showPlayer(p);
 						}
-
 					} else {
-
 						if (shop.getHologram().isVisible(p)) {
 							shop.getHologram().hidePlayer(p);
 						}
-
 					}
-
 				}
 			}
-
 		}
-
 	}
-
 }

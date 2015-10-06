@@ -25,35 +25,25 @@ public class ShopUtils {
 	private static HashMap<Location, Shop> shopLocation = new HashMap<>();
 
 	public static Shop getShop(Location location) {
-
 		Location newLocation = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
-
 		if (shopLocation.containsKey(newLocation)) {
 			return shopLocation.get(newLocation);
 		} else {
 			return null;
 		}
-
 	}
 
 	public static boolean isShop(Location location) {
-
 		Location newLocation = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
-
 		return shopLocation.containsKey(newLocation);
-
 	}
 
 	public static Shop[] getShops() {
-
 		ArrayList<Shop> shops = new ArrayList<>();
-
 		for (Shop shop : shopLocation.values()) {
 			shops.add(shop);
 		}
-
 		return shops.toArray(new Shop[shops.size()]);
-
 	}
 
 	public static void addShop(Shop shop) {
@@ -67,11 +57,9 @@ public class ShopUtils {
 				DoubleChest dc = (DoubleChest) ih;
 				Chest r = (Chest) dc.getRightSide();
 				Chest l = (Chest) dc.getLeftSide();
-
 				shopLocation.put(r.getLocation(), shop);
 				shopLocation.put(l.getLocation(), shop);
 				return;
-
 			}
 		}
 
@@ -90,12 +78,10 @@ public class ShopUtils {
 				DoubleChest dc = (DoubleChest) ih;
 				Chest r = (Chest) dc.getRightSide();
 				Chest l = (Chest) dc.getLeftSide();
-
 				shop.getItem().remove();
 				shopLocation.remove(r.getLocation());
 				shopLocation.remove(l.getLocation());
 				return;
-
 			}
 		}
 
@@ -144,7 +130,6 @@ public class ShopUtils {
 						break;
 					}
 				}
-
 				limit = highestLimit;
 			}
 
@@ -162,18 +147,15 @@ public class ShopUtils {
 				}
 			}
 		}
-
 		return limit;
 	}
 
 	public static int getShopAmount(OfflinePlayer p) {
 		int shopCount = 0;
-
 		for (Shop shop : ShopUtils.getShops()) {
 			if (shop.getVendor().equals(p))
 				shopCount++;
 		}
-
 		return shopCount;
 	}
 

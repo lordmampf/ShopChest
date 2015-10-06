@@ -15,17 +15,13 @@ public class Utils_R3 extends Utils {
 
 	@Override
 	public void reload(Player player) {
-
 		for (Shop shop : ShopUtils.getShops()) {
 			Hologram hologram = shop.getHologram();
-
 			shop.getItem().remove();
 			ShopUtils.removeShop(shop);
-
 			for (Player p : ShopChest.getInstance().getServer().getOnlinePlayers()) {
 				hologram.hidePlayer(p);
 			}
-
 			for (Object o : hologram.getEntities()) {
 				EntityArmorStand e = (EntityArmorStand) o;
 				e.getWorld().removeEntity(e);
@@ -33,9 +29,7 @@ public class Utils_R3 extends Utils {
 		}
 
 		int count = 0;
-
 		for (int id = 1; id < ShopChest.sqlite.getHighestID() + 1; id++) {
-
 			try {
 				Shop shop = ShopChest.sqlite.getShop(id);
 				shop.createHologram();
@@ -44,9 +38,7 @@ public class Utils_R3 extends Utils {
 			} catch (NullPointerException e) {
 				continue;
 			}
-
 			count++;
-
 		}
 
 		if (player != null)
@@ -71,9 +63,7 @@ public class Utils_R3 extends Utils {
 				EntityArmorStand e = (EntityArmorStand) o;
 				e.getWorld().removeEntity(e);
 			}
-
 			shop.getItem().remove();
-
 		}
 	}
 

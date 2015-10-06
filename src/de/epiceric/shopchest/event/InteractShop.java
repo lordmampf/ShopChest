@@ -302,7 +302,6 @@ public class InteractShop implements Listener {
 		executor.sendMessage(price);
 		executor.sendMessage(infinite);
 		executor.sendMessage(" ");
-
 	}
 
 	private void buy(Player executor, Shop shop) {
@@ -311,13 +310,10 @@ public class InteractShop implements Listener {
 
 			Block b = shop.getLocation().getBlock();
 			Chest c = (Chest) b.getState();
-
 			HashMap<Integer, Integer> slotFree = new HashMap<>();
 			ItemStack product = shop.getProduct().clone();
 			Inventory inventory = executor.getInventory();
-
 			for (int i = 0; i < 36; i++) {
-
 				ItemStack item = inventory.getItem(i);
 				if (item == null) {
 					slotFree.put(i, product.getMaxStackSize());
@@ -329,7 +325,6 @@ public class InteractShop implements Listener {
 						slotFree.put(i, amountToFullStack);
 					}
 				}
-
 			}
 
 			int leftAmount = product.getAmount();
@@ -387,9 +382,7 @@ public class InteractShop implements Listener {
 	}
 
 	private void sell(Player executor, Shop shop) {
-
 		if (econ.getBalance(shop.getVendor()) >= shop.getSellPrice()) {
-
 			Block block = shop.getLocation().getBlock();
 			Chest chest = (Chest) block.getState();
 
@@ -410,11 +403,9 @@ public class InteractShop implements Listener {
 						slotFree.put(i, amountToFullStack);
 					}
 				}
-
 			}
 
 			int leftAmount = product.getAmount();
-
 			int freeAmount = 0;
 			for (int value : slotFree.values()) {
 				freeAmount += value;
