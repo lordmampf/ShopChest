@@ -19,8 +19,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
-import org.yi.acru.bukkit.Lockette.Lockette;
-
 import com.griefcraft.model.Protection;
 
 import de.epiceric.shopchest.ShopChest;
@@ -67,7 +65,7 @@ public class InteractShop implements Listener{
 							e.setCancelled(true);
 														
 							if (!p.isOp() || !perm.has(p, "shopchest.create.protected")) {
-								if (ShopChest.lockette) {
+/*								if (ShopChest.lockette) {
 									if (Lockette.isProtected(b)) {
 										if (!Lockette.isOwner(b, p) || !Lockette.isUser(b, p, true)) {
 											ClickType.removePlayerClickType(p);
@@ -75,7 +73,7 @@ public class InteractShop implements Listener{
 										}
 									}
 								}
-								
+								*/
 								if (ShopChest.lwc != null) {
 									if (ShopChest.lwc.getPhysicalDatabase().loadProtection(b.getLocation().getWorld().getName(), b.getX(), b.getY(), b.getZ()) != null) {
 										Protection protection = ShopChest.lwc.getPhysicalDatabase().loadProtection(b.getLocation().getWorld().getName(), b.getX(), b.getY(), b.getZ());

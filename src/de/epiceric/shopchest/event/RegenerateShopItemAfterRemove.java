@@ -8,7 +8,7 @@ import de.epiceric.shopchest.ShopChest;
 
 public class RegenerateShopItemAfterRemove implements Listener {
 	
-	
+	/*
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onEntityRemove(me.minebuilders.clearlag.events.EntityRemoveEvent e) {
 		boolean containsShopItem = false;
@@ -21,6 +21,6 @@ public class RegenerateShopItemAfterRemove implements Listener {
 		
 		if (containsShopItem) ShopChest.utils.reload(null);
 	}
-
+*/
 
 }

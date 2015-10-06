@@ -21,28 +21,23 @@ import com.griefcraft.lwc.LWCPlugin;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.event.InteractShop;
 import de.epiceric.shopchest.event.ItemCustomNameListener;
-import de.epiceric.shopchest.event.NotifyUpdate;
+import de.epiceric.shopchest.event.PlayerListener;
 import de.epiceric.shopchest.event.ProtectChest;
 import de.epiceric.shopchest.event.RegenerateShopItem;
 import de.epiceric.shopchest.event.RegenerateShopItemAfterRemove;
 import de.epiceric.shopchest.event.UpdateHolograms;
 import de.epiceric.shopchest.interfaces.Utils;
-import de.epiceric.shopchest.interfaces.utils.Utils_R1;
-import de.epiceric.shopchest.interfaces.utils.Utils_R2;
 import de.epiceric.shopchest.interfaces.utils.Utils_R3;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.sql.SQLite;
 import de.epiceric.shopchest.interfaces.JsonBuilder;
 import de.epiceric.shopchest.interfaces.JsonBuilder.ClickAction;
 import de.epiceric.shopchest.interfaces.JsonBuilder.HoverAction;
-import de.epiceric.shopchest.interfaces.jsonbuilder.JsonBuilder_R1;
-import de.epiceric.shopchest.interfaces.jsonbuilder.JsonBuilder_R2;
 import de.epiceric.shopchest.interfaces.jsonbuilder.JsonBuilder_R3;
 import de.epiceric.shopchest.utils.Metrics;
 import de.epiceric.shopchest.utils.Metrics.Graph;
 import de.epiceric.shopchest.utils.Metrics.Plotter;
 import de.epiceric.shopchest.utils.ShopUtils;
-import de.epiceric.shopchest.utils.UpdateChecker;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
@@ -149,9 +144,6 @@ public class ShopChest extends JavaPlugin{
 		sqlite.load();
 		
 		switch (Utils.getVersion(getServer())) {
-		
-		case "v1_8_R1": utils = new Utils_R1(); break;
-		case "v1_8_R2": utils = new Utils_R2(); break;
 		case "v1_8_R3": utils = new Utils_R3(); break;
 		default:
 			logger.severe("Incompatible Server Version!");
@@ -176,7 +168,7 @@ public class ShopChest extends JavaPlugin{
 		
 		instance = this;
 
-		
+		/*
 		UpdateChecker uc = new UpdateChecker(this, getDescription().getWebsite());
 		logger.info("Checking for Updates");
 		if(uc.updateNeeded()) {
@@ -194,8 +186,6 @@ public class ShopChest extends JavaPlugin{
 				if (p.isOp() || perm.has(p, "shopchest.notification.update")) {
 					JsonBuilder jb;
 					switch (Utils.getVersion(getServer())) {
-						case "v1_8_R1": jb = new JsonBuilder_R1(Config.update_available(latestVersion)).withHoverEvent(HoverAction.SHOW_TEXT, Config.click_to_download()).withClickEvent(ClickAction.OPEN_URL, downloadLink); break;
-						case "v1_8_R2": jb = new JsonBuilder_R2(Config.update_available(latestVersion)).withHoverEvent(HoverAction.SHOW_TEXT, Config.click_to_download()).withClickEvent(ClickAction.OPEN_URL, downloadLink); break;
 						case "v1_8_R3": jb = new JsonBuilder_R3(Config.update_available(latestVersion)).withHoverEvent(HoverAction.SHOW_TEXT, Config.click_to_download()).withClickEvent(ClickAction.OPEN_URL, downloadLink); break;
 						default: return;
 					}		
@@ -203,7 +193,8 @@ public class ShopChest extends JavaPlugin{
 				
 				}
 			}
-		}			
+		}
+		*/			
 		
 		File itemNamesFile = new File(getDataFolder(), "item_names.txt");
 		
@@ -224,9 +215,11 @@ public class ShopChest extends JavaPlugin{
 		getServer().getPluginManager().registerEvents(new UpdateHolograms(), this);
 		getServer().getPluginManager().registerEvents(new RegenerateShopItem(), this);
 		getServer().getPluginManager().registerEvents(new InteractShop(this), this);
-		getServer().getPluginManager().registerEvents(new NotifyUpdate(), this);
 		getServer().getPluginManager().registerEvents(new ProtectChest(), this);
 		getServer().getPluginManager().registerEvents(new ItemCustomNameListener(), this);
+		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+		
+		
 		
 		if (getServer().getPluginManager().getPlugin("ClearLag") != null) getServer().getPluginManager().registerEvents(new RegenerateShopItemAfterRemove(), this);
 		

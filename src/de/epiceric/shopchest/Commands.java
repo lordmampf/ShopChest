@@ -17,13 +17,10 @@ import de.epiceric.shopchest.interfaces.JsonBuilder;
 import de.epiceric.shopchest.interfaces.JsonBuilder.ClickAction;
 import de.epiceric.shopchest.interfaces.JsonBuilder.HoverAction;
 import de.epiceric.shopchest.interfaces.Utils;
-import de.epiceric.shopchest.interfaces.jsonbuilder.JsonBuilder_R1;
-import de.epiceric.shopchest.interfaces.jsonbuilder.JsonBuilder_R2;
 import de.epiceric.shopchest.interfaces.jsonbuilder.JsonBuilder_R3;
 import de.epiceric.shopchest.utils.ClickType;
 import de.epiceric.shopchest.utils.ClickType.EnumClickType;
 import de.epiceric.shopchest.utils.ShopUtils;
-import de.epiceric.shopchest.utils.UpdateChecker;
 import net.milkbowl.vault.permission.Permission;
 
 public class Commands extends BukkitCommand {
@@ -132,7 +129,7 @@ public class Commands extends BukkitCommand {
 					}
 					
 				} else if (args[0].equalsIgnoreCase("update")) {
-					
+					/*
 					if (perm.has(p, "shopchest.update")) {
 						checkUpdates(p);
 						return true;
@@ -140,6 +137,10 @@ public class Commands extends BukkitCommand {
 						p.sendMessage(Config.noPermission_update());
 						return true;
 					}
+					*/
+					
+					p.sendMessage("cmd removed by mampf");
+					return true;
 					
 				} else if (args[0].equalsIgnoreCase("limits")) {
 					
@@ -168,35 +169,7 @@ public class Commands extends BukkitCommand {
 		}
 		
 	}
-	
-	private void checkUpdates(Player player) {
 		
-		player.sendMessage(Config.checking_update());
-		
-		UpdateChecker uc = new UpdateChecker(ShopChest.getInstance(), ShopChest.getInstance().getDescription().getWebsite());
-		if (uc.updateNeeded()) {
-			ShopChest.latestVersion = uc.getVersion();
-			ShopChest.downloadLink = uc.getLink();
-			ShopChest.isUpdateNeeded = true;
-			
-			JsonBuilder jb;
-			switch (Utils.getVersion(plugin.getServer())) {
-				case "v1_8_R1": jb = new JsonBuilder_R1(Config.update_available(ShopChest.latestVersion)).withHoverEvent(HoverAction.SHOW_TEXT, Config.click_to_download()).withClickEvent(ClickAction.OPEN_URL, ShopChest.downloadLink); break;
-				case "v1_8_R2": jb = new JsonBuilder_R2(Config.update_available(ShopChest.latestVersion)).withHoverEvent(HoverAction.SHOW_TEXT, Config.click_to_download()).withClickEvent(ClickAction.OPEN_URL, ShopChest.downloadLink); break;
-				case "v1_8_R3": jb = new JsonBuilder_R3(Config.update_available(ShopChest.latestVersion)).withHoverEvent(HoverAction.SHOW_TEXT, Config.click_to_download()).withClickEvent(ClickAction.OPEN_URL, ShopChest.downloadLink); break;
-				default: return;
-			}		
-			jb.sendJson(player);
-			
-		} else {
-			ShopChest.latestVersion = "";
-			ShopChest.downloadLink = "";
-			ShopChest.isUpdateNeeded = false;
-			player.sendMessage(Config.no_new_update());
-		}
-		
-	}
-	
 	private void reload(Player player) {
 		
 		ShopChest.utils.reload(player);		
