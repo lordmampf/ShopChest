@@ -17,32 +17,33 @@ import de.epiceric.shopchest.utils.ShopUtils;
 
 public class ProtectChest implements Listener {
 
-	public ProtectChest() {}
-	
-	@EventHandler
+	public ProtectChest() {
+	}
+
+	@EventHandler(ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent e) {
 		if (ShopUtils.isShop(e.getBlock().getLocation())) {
 			e.setCancelled(true);
 			e.getPlayer().sendMessage(Config.cannot_break_shop());
 		}
 	}
-	
-	@EventHandler
+
+	@EventHandler(ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent e) {
 		Block b = e.getBlockPlaced();
 		if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
-			
+
 			Chest c = (Chest) b.getState();
 			InventoryHolder ih = c.getInventory().getHolder();
-			
+
 			if (ih instanceof DoubleChest) {
 				DoubleChest dc = (DoubleChest) ih;
 				Chest r = (Chest) dc.getRightSide();
 				Chest l = (Chest) dc.getLeftSide();
-				
+
 				if (ShopUtils.isShop(r.getLocation()) || ShopUtils.isShop(l.getLocation())) {
 					Shop shop;
-					
+
 					if (b.getLocation().equals(r.getLocation())) {
 						shop = ShopUtils.getShop(l.getLocation());
 						ShopUtils.removeShop(shop);
@@ -52,17 +53,18 @@ public class ProtectChest implements Listener {
 					} else {
 						return;
 					}
-					
+
 					shop.getItem().remove();
-					
-					Shop newShop = new Shop(ShopChest.getInstance(), shop.getVendor(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.isInfinite());
+
+					Shop newShop = new Shop(ShopChest.getInstance(), shop.getVendor(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(),
+							shop.getSellPrice(), shop.isInfinite());
 					ShopUtils.addShop(newShop);
-					
-				}		
-				
+
+				}
+
 			}
-			
+
 		}
 	}
-	
+
 }

@@ -1,6 +1,5 @@
 package de.epiceric.shopchest.event;
 
-
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -9,18 +8,21 @@ import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
 public class RegenerateShopItem implements Listener {
-	
-	public RegenerateShopItem() {}
-	
-	@EventHandler(priority = EventPriority.HIGH)
+
+	public RegenerateShopItem() {
+	}
+
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onItemDespawn(ItemDespawnEvent e) {
-		Item item = e.getEntity();		
-		if (item.hasMetadata("shopItem")) e.setCancelled(true);		
+		Item item = e.getEntity();
+		if (item.hasMetadata("shopItem"))
+			e.setCancelled(true);
 	}
-	
-	@EventHandler(priority = EventPriority.HIGH)
+
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerPickUpItem(PlayerPickupItemEvent e) {
-		if (e.getItem().hasMetadata("shopItem")) e.setCancelled(true);
+		if (e.getItem().hasMetadata("shopItem"))
+			e.setCancelled(true);
 	}
-	
+
 }

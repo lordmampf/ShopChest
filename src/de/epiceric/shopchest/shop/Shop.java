@@ -65,7 +65,7 @@ public class Shop {
 		item.setVelocity(new Vector(0, 0, 0));
 		item.setMetadata("shopItem", new FixedMetadataValue(plugin, true));
 		item.setCustomNameVisible(false);
-		
+
 		this.item = item;
 	}
 	

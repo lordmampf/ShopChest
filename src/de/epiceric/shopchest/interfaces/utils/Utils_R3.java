@@ -18,10 +18,10 @@ public class Utils_R3 extends Utils {
 
 		for (Shop shop : ShopUtils.getShops()) {
 			Hologram hologram = shop.getHologram();
-			
+
 			shop.getItem().remove();
 			ShopUtils.removeShop(shop);
-			
+
 			for (Player p : ShopChest.getInstance().getServer().getOnlinePlayers()) {
 				hologram.hidePlayer(p);
 			}
@@ -29,58 +29,52 @@ public class Utils_R3 extends Utils {
 			for (Object o : hologram.getEntities()) {
 				EntityArmorStand e = (EntityArmorStand) o;
 				e.getWorld().removeEntity(e);
-			}			
-						
-			
+			}
 		}
-		
+
 		int count = 0;
-		
+
 		for (int id = 1; id < ShopChest.sqlite.getHighestID() + 1; id++) {
-			
+
 			try {
 				Shop shop = ShopChest.sqlite.getShop(id);
 				shop.createHologram();
-				shop.createItem();				
+				shop.createItem();
 				ShopUtils.addShop(shop);
 			} catch (NullPointerException e) {
 				continue;
 			}
-			
+
 			count++;
-			
+
 		}
-		
-		if (player != null) player.sendMessage(Config.reloaded_shops(count));
-		
+
+		if (player != null)
+			player.sendMessage(Config.reloaded_shops(count));
+
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			Bukkit.getPluginManager().callEvent(new PlayerMoveEvent(p, p.getLocation(), p.getLocation()));
 		}
-		
-		
+
 	}
 
-	
 	@Override
 	public void removeShops() {
 		for (Shop shop : ShopUtils.getShops()) {
 			Hologram hologram = shop.getHologram();
-			
+
 			for (Player p : Bukkit.getOnlinePlayers()) {
 				hologram.hidePlayer(p);
 			}
-			
+
 			for (Object o : hologram.getEntities()) {
 				EntityArmorStand e = (EntityArmorStand) o;
 				e.getWorld().removeEntity(e);
 			}
 
-			
 			shop.getItem().remove();
-			
-		}	
+
+		}
 	}
 
-
-	
 }

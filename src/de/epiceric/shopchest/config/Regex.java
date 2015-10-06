@@ -15,5 +15,5 @@ public class Regex {
 	public static String sellPrice = "%SELL-PRICE%";
 	public static String limit = "%LIMIT%";
 	public static String player = "%PLAYER%";
-	
+
 }
