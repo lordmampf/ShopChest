@@ -53,9 +53,16 @@ public class PlayerListener implements Listener {
 	}
 
 	@EventHandler(ignoreCancelled = true)
-	public void onMove(InventoryClickEvent e) {
+	public void onInventoryMove(InventoryClickEvent e) {
+		if (e.getCurrentItem() == null)
+			return;
+
 		if (e.getCurrentItem().hasItemMeta()) {
 			ItemMeta im = e.getCurrentItem().getItemMeta();
+
+			if (im.getLore() == null)
+				return;
+
 			if (im.getLore().contains("#invalid#shop#item")) {
 				e.setCancelled(true);
 				e.getInventory().setItem(e.getSlot(), null);
