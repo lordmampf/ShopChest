@@ -317,9 +317,9 @@ public class Config {
 				.replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
 	}
 
-	public static String someone_bought(int amount, String itemName, double sellPrice, String player) {
+	public static String someone_bought(int amount, String itemName, double buyprice, String player) {
 		return plugin.getConfig().getString("messages.someone-bought").replace(Regex.currencySymbol, currency_symbol())
-				.replace(Regex.amount, String.valueOf(amount)).replace(Regex.itemName, itemName).replace(Regex.sellPrice, String.valueOf(sellPrice))
+				.replace(Regex.amount, String.valueOf(amount)).replace(Regex.itemName, itemName).replace(Regex.buyPrice, String.valueOf(buyprice))
 				.replace(Regex.player, player).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
 	}
 

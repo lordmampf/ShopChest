@@ -161,62 +161,57 @@ public class InteractShop implements Listener {
 									}
 								} else {
 
-									if (shop.getBuyPrice() > 0) {
-										e.setCancelled(true);
-
-										if (perm.has(p, "shopchest.buy")) {
-											if (shop.isInfinite()) {
-												buy(p, shop);
+									if (shop.getSellPrice() > 0) {
+										if (perm.has(p, "shopchest.sell")) {
+											if (Utils.getAmount(p.getInventory(), shop.getProduct().getType(), shop.getProduct().getDurability(),
+													shop.getProduct().getItemMeta()) >= shop.getProduct().getAmount()) {
+												sell(p, shop);
 											} else {
-												Chest c = (Chest) b.getState();
-												if (Utils.getAmount(c.getInventory(), shop.getProduct().clone().getType(),
-														shop.getProduct().clone().getDurability(),
-														shop.getProduct().getItemMeta()) >= shop.getProduct().getAmount()) {
-													buy(p, shop);
-												} else {
-													p.sendMessage(Config.out_of_stock());
-												}
+												p.sendMessage(Config.not_enough_items());
 											}
 										} else {
-											p.sendMessage(Config.noPermission_buy());
+											p.sendMessage(Config.noPermission_sell());
 										}
 									} else {
-										p.sendMessage(Config.buying_disabled());
+										p.sendMessage(Config.selling_disabled());
 									}
+
 								}
-
 							}
-
 						}
-
 					}
-
 				} else if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
 
 					if (ShopUtils.isShop(b.getLocation())) {
 						Shop shop = ShopUtils.getShop(b.getLocation());
 
 						if (!p.getUniqueId().equals(shop.getVendor().getUniqueId())) {
-							if (shop.getSellPrice() > 0) {
-								if (perm.has(p, "shopchest.sell")) {
-									if (Utils.getAmount(p.getInventory(), shop.getProduct().getType(), shop.getProduct().getDurability(),
-											shop.getProduct().getItemMeta()) >= shop.getProduct().getAmount()) {
-										sell(p, shop);
+
+							if (shop.getBuyPrice() > 0) {
+								e.setCancelled(true);
+
+								if (perm.has(p, "shopchest.buy")) {
+									if (shop.isInfinite()) {
+										buy(p, shop);
 									} else {
-										p.sendMessage(Config.not_enough_items());
+										Chest c = (Chest) b.getState();
+										if (Utils.getAmount(c.getInventory(), shop.getProduct().clone().getType(), shop.getProduct().clone().getDurability(),
+												shop.getProduct().getItemMeta()) >= shop.getProduct().getAmount()) {
+											buy(p, shop);
+										} else {
+											p.sendMessage(Config.out_of_stock());
+										}
 									}
 								} else {
-									p.sendMessage(Config.noPermission_sell());
+									p.sendMessage(Config.noPermission_buy());
 								}
 							} else {
-								p.sendMessage(Config.selling_disabled());
+								p.sendMessage(Config.buying_disabled());
 							}
+
 						}
-
 					}
-
 				}
-
 			}
 
 		} else {
