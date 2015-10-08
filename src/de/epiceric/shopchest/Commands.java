@@ -1,13 +1,11 @@
 package de.epiceric.shopchest;
 
-import java.lang.reflect.Method;
-import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -18,27 +16,26 @@ import de.epiceric.shopchest.utils.ClickType.EnumClickType;
 import de.epiceric.shopchest.utils.ShopUtils;
 import net.milkbowl.vault.permission.Permission;
 
-public class Commands extends BukkitCommand {
-
+public class Commands implements CommandExecutor {
 	private ShopChest plugin;
 
 	private Permission perm = ShopChest.perm;
 
-	public Commands(ShopChest plugin, String name, String description, String usageMessage, List<String> aliases) {
-		super(name, description, usageMessage, aliases);
+	public Commands(ShopChest plugin) {
 		this.plugin = plugin;
 	}
 
-	public static void registerCommand(Command command, ShopChest plugin) throws ReflectiveOperationException {
-		Method commandMap = plugin.getServer().getClass().getMethod("getCommandMap");
-		Object cmdmap = commandMap.invoke(plugin.getServer());
-		Method register = cmdmap.getClass().getMethod("register", String.class, Command.class);
-		register.invoke(cmdmap, command.getName(), command);
-	}
+	/*
+	 * public static void registerCommand(Command command, ShopChest plugin) throws ReflectiveOperationException {
+	 * Method commandMap = plugin.getServer().getClass().getMethod("getCommandMap");
+	 * Object cmdmap = commandMap.invoke(plugin.getServer());
+	 * Method register = cmdmap.getClass().getMethod("register", String.class, Command.class);
+	 * register.invoke(cmdmap, command.getName(), command);
+	 * }
+	 */
 
 	@Override
-	public boolean execute(CommandSender sender, String label, String[] args) {
-
+	public boolean onCommand(CommandSender sender, Command arg1, String arg2, String[] args) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
 
@@ -117,12 +114,10 @@ public class Commands extends BukkitCommand {
 				}
 				return true;
 			}
-
 		} else {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Only players can execute this command.");
 			return true;
 		}
-
 	}
 
 	private void reload(Player player) {
@@ -239,7 +234,6 @@ public class Commands extends BukkitCommand {
 	}
 
 	private void sendBasicHelpMessage(Player player) {
-
 		player.sendMessage(
 				ChatColor.GREEN + "/" + Config.main_command_name() + " create <amount> <buy-price> <sell-price> [infinite|normal]- " + Config.cmdDesc_create());
 		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " remove - " + Config.cmdDesc_remove());
