@@ -156,13 +156,13 @@ public class ShopChest extends JavaPlugin {
 			}
 
 		copy(getResource("item_names.txt"), itemNamesFile);
-		/*
-		 * try {
-		 * Commands.registerCommand(new Commands(this, Config.main_command_name(), "Manage Shops.", "", new ArrayList<String>()), this);
-		 * } catch (Exception e) {
-		 * e.printStackTrace();
-		 * }
-		 */
+
+		try {
+			Commands.registerCommand(new Commands(this, Config.main_command_name(), "Manage Shops.", "", new ArrayList<String>()), this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		initializeShops();
 
 		getServer().getPluginManager().registerEvents(new UpdateHolograms(), this);
@@ -171,8 +171,6 @@ public class ShopChest extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new ProtectChest(), this);
 		getServer().getPluginManager().registerEvents(new ItemCustomNameListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-
-		getCommand("playershop").setExecutor(new Commands(this));
 
 		if (getServer().getPluginManager().getPlugin("ClearLag") != null)
 			getServer().getPluginManager().registerEvents(new RegenerateShopItemAfterRemove(), this);
