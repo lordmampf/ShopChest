@@ -57,7 +57,6 @@ public class ShopChest extends JavaPlugin {
 	}
 
 	private boolean setupEconomy() {
-
 		RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
 		if (rsp == null) {
 			return false;
@@ -77,12 +76,6 @@ public class ShopChest extends JavaPlugin {
 		instance = this;
 
 		logger = getLogger();
-
-		if (getServer().getPluginManager().getPlugin("Vault") == null) {
-			logger.severe("Could not find plugin 'Vault'!");
-			getServer().getPluginManager().disablePlugin(this);
-			return;
-		}
 
 		if (!setupEconomy()) {
 			logger.severe("Could not find any Vault dependency!");
@@ -178,7 +171,8 @@ public class ShopChest extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		utils.removeShops();
+		if (utils != null)
+			utils.removeShops();
 	}
 
 	private void initializeShops() {

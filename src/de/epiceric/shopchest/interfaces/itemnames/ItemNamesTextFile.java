@@ -138,7 +138,6 @@ public class ItemNamesTextFile implements ItemNames {
 			.put("2260", "Music Disk (Far)").put("2261", "Music Disk (Mall)").put("2262", "Music Disk (Mellohi)").put("2263", "Music Disk (Stal)")
 			.put("2264", "Music Disk (Strad)").put("2265", "Music Disk (Ward)").put("2266", "Music Disk (11)").put("2267", "Music Disk (wait)").build();
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public String lookup(ItemStack stack) {
 		if (stack.hasItemMeta()) {
