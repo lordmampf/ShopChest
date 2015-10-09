@@ -28,7 +28,6 @@ import de.epiceric.shopchest.utils.ClickType;
 import de.epiceric.shopchest.utils.EnchantmentNames;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.interfaces.Utils;
-import de.epiceric.shopchest.interfaces.itemnames.ItemNamesTextFile;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.permission.Permission;
@@ -350,11 +349,11 @@ public class InteractShop implements Listener {
 										executor.updateInventory();
 										leftAmount--;
 									} else if (leftAmount == 0) {
-										executor.sendMessage(
-												Config.buy_success(product.getAmount(), ShopChest.itemnames.lookup(product), shop.getBuyPrice(), shop.getVendor().getName()));
+										executor.sendMessage(Config.buy_success(product.getAmount(), ShopChest.itemnames.lookup(product), shop.getBuyPrice(),
+												shop.getVendor().getName()));
 										if (shop.getVendor().isOnline())
-											shop.getVendor().getPlayer().sendMessage(
-													Config.someone_bought(product.getAmount(), ShopChest.itemnames.lookup(product), shop.getBuyPrice(), executor.getName()));
+											shop.getVendor().getPlayer().sendMessage(Config.someone_bought(product.getAmount(), ShopChest.itemnames.lookup(product),
+													shop.getBuyPrice(), executor.getName()));
 										return;
 									}
 								}
@@ -430,8 +429,8 @@ public class InteractShop implements Listener {
 										executor.sendMessage(Config.sell_success(product.getAmount(), ShopChest.itemnames.lookup(product), shop.getSellPrice(),
 												shop.getVendor().getName()));
 										if (shop.getVendor().isOnline())
-											shop.getVendor().getPlayer().sendMessage(
-													Config.someone_sold(product.getAmount(), ShopChest.itemnames.lookup(product), shop.getBuyPrice(), executor.getName()));
+											shop.getVendor().getPlayer().sendMessage(Config.someone_sold(product.getAmount(), ShopChest.itemnames.lookup(product),
+													shop.getBuyPrice(), executor.getName()));
 										return;
 									}
 								}
