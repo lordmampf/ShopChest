@@ -145,7 +145,6 @@ public class ShopChest extends JavaPlugin {
 		 * }
 		 * }
 		 */
-
 		File itemNamesFile = new File(getDataFolder(), "item_names.txt");
 
 		if (!itemNamesFile.exists())

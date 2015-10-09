@@ -38,7 +38,6 @@ public class Commands extends BukkitCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String label, String[] args) {
-
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
 
@@ -100,7 +99,6 @@ public class Commands extends BukkitCommand {
 					 * return true;
 					 * }
 					 */
-
 					p.sendMessage("cmd removed by mampf");
 					return true;
 
