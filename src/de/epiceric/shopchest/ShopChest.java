@@ -21,9 +21,11 @@ import de.epiceric.shopchest.event.ItemCustomNameListener;
 import de.epiceric.shopchest.event.PlayerListener;
 import de.epiceric.shopchest.event.ProtectChest;
 import de.epiceric.shopchest.event.RegenerateShopItem;
-import de.epiceric.shopchest.event.RegenerateShopItemAfterRemove;
 import de.epiceric.shopchest.event.UpdateHolograms;
+import de.epiceric.shopchest.interfaces.ItemNames;
 import de.epiceric.shopchest.interfaces.Utils;
+import de.epiceric.shopchest.interfaces.itemnames.ItemNamesMampfLib;
+import de.epiceric.shopchest.interfaces.itemnames.ItemNamesTextFile;
 import de.epiceric.shopchest.interfaces.utils.Utils_R3;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.sql.SQLite;
@@ -40,7 +42,8 @@ public class ShopChest extends JavaPlugin {
 	public static Economy econ = null;
 	public static Permission perm = null;
 	public static LWC lwc = null;
-	public static boolean lockette = false;
+	public static ItemNames itemnames;
+
 	public static SQLite sqlite;
 
 	public static boolean isUpdateNeeded = false;
@@ -71,6 +74,7 @@ public class ShopChest extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		instance = this;
 
 		logger = getLogger();
 
@@ -109,15 +113,14 @@ public class ShopChest extends JavaPlugin {
 			lwc = null;
 		}
 
-		if (getServer().getPluginManager().getPlugin("Lockette") != null) {
-			lockette = true;
-		} else {
-			lockette = false;
-		}
-
 		setupPermissions();
 
-		instance = this;
+		if (getServer().getPluginManager().getPlugin("MampfLib") != null) {
+			itemnames = new ItemNamesMampfLib();
+			logger.info("[ShopChest] using MampfLib Itemnames");
+		} else {
+			itemnames = new ItemNamesTextFile();
+		}
 
 		/*
 		 * UpdateChecker uc = new UpdateChecker(this, getDescription().getWebsite());
@@ -145,6 +148,7 @@ public class ShopChest extends JavaPlugin {
 		 * }
 		 * }
 		 */
+
 		File itemNamesFile = new File(getDataFolder(), "item_names.txt");
 
 		if (!itemNamesFile.exists())
@@ -170,9 +174,6 @@ public class ShopChest extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new ProtectChest(), this);
 		getServer().getPluginManager().registerEvents(new ItemCustomNameListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-
-		if (getServer().getPluginManager().getPlugin("ClearLag") != null)
-			getServer().getPluginManager().registerEvents(new RegenerateShopItemAfterRemove(), this);
 	}
 
 	@Override

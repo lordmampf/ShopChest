@@ -21,7 +21,7 @@ import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.interfaces.Hologram;
 import de.epiceric.shopchest.interfaces.Utils;
 import de.epiceric.shopchest.interfaces.hologram.Hologram_R3;
-import de.epiceric.shopchest.utils.ItemNames;
+import de.epiceric.shopchest.interfaces.itemnames.ItemNamesTextFile;
 
 public class Shop {
 
@@ -138,7 +138,7 @@ public class Shop {
 		} else
 			holoLocation = new Location(b.getWorld(), b.getX() + 0.5, b.getY() - 0.6, b.getZ() + 0.5);
 
-		holoText[0] = Config.hologram_format(product.getAmount(), ItemNames.lookup(product));
+		holoText[0] = Config.hologram_format(product.getAmount(), ShopChest.itemnames.lookup(product));
 
 		if ((buyPrice <= 0) && (sellPrice > 0))
 			holoText[1] = Config.hologram_sell(sellPrice);

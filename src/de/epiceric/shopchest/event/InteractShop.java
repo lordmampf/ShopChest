@@ -26,9 +26,9 @@ import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.sql.SQLite;
 import de.epiceric.shopchest.utils.ClickType;
 import de.epiceric.shopchest.utils.EnchantmentNames;
-import de.epiceric.shopchest.utils.ItemNames;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.interfaces.Utils;
+import de.epiceric.shopchest.interfaces.itemnames.ItemNamesTextFile;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.permission.Permission;
@@ -259,7 +259,7 @@ public class InteractShop implements Listener {
 		int amount = Utils.getAmount(c.getInventory(), shop.getProduct().getType(), shop.getProduct().getDurability(), shop.getProduct().getItemMeta());
 
 		String vendor = Config.shopInfo_vendor(shop.getVendor().getName());
-		String product = Config.shopInfo_product(shop.getProduct().getAmount(), ItemNames.lookup(shop.getProduct()));
+		String product = Config.shopInfo_product(shop.getProduct().getAmount(), ShopChest.itemnames.lookup(shop.getProduct()));
 		String enchantmentString = "";
 		String price = Config.shopInfo_price(shop.getBuyPrice(), shop.getSellPrice());
 		String infinite = (shop.isInfinite() ? Config.shopInfo_isInfinite() : Config.shopInfo_isNormal());
@@ -351,10 +351,10 @@ public class InteractShop implements Listener {
 										leftAmount--;
 									} else if (leftAmount == 0) {
 										executor.sendMessage(
-												Config.buy_success(product.getAmount(), ItemNames.lookup(product), shop.getBuyPrice(), shop.getVendor().getName()));
+												Config.buy_success(product.getAmount(), ShopChest.itemnames.lookup(product), shop.getBuyPrice(), shop.getVendor().getName()));
 										if (shop.getVendor().isOnline())
 											shop.getVendor().getPlayer().sendMessage(
-													Config.someone_bought(product.getAmount(), ItemNames.lookup(product), shop.getBuyPrice(), executor.getName()));
+													Config.someone_bought(product.getAmount(), ShopChest.itemnames.lookup(product), shop.getBuyPrice(), executor.getName()));
 										return;
 									}
 								}
@@ -427,11 +427,11 @@ public class InteractShop implements Listener {
 										executor.updateInventory();
 										leftAmount--;
 									} else if (leftAmount == 0) {
-										executor.sendMessage(Config.sell_success(product.getAmount(), ItemNames.lookup(product), shop.getSellPrice(),
+										executor.sendMessage(Config.sell_success(product.getAmount(), ShopChest.itemnames.lookup(product), shop.getSellPrice(),
 												shop.getVendor().getName()));
 										if (shop.getVendor().isOnline())
 											shop.getVendor().getPlayer().sendMessage(
-													Config.someone_sold(product.getAmount(), ItemNames.lookup(product), shop.getBuyPrice(), executor.getName()));
+													Config.someone_sold(product.getAmount(), ShopChest.itemnames.lookup(product), shop.getBuyPrice(), executor.getName()));
 										return;
 									}
 								}

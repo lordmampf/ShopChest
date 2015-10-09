@@ -35,11 +35,11 @@
 
 # Set the main command you have to enter to manage the shops (default: "/shop ...")
 # DO NOT USE COLOR-/FORMATTING CODES HERE!
-main-command-name: "shop"
+main-command-name: "playershop"
 
 # Set the maximal distance to the shop where the player can see the hologram.
 # Value MUST be a number (e.g. 1, 1.5, 2.75, ...)
-maximal-distance: 1.75
+maximal-distance: 5
 
 # Set the currency symbol after price values
 currency-symbol: $
