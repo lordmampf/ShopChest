@@ -42,7 +42,7 @@ main-command-name: "playershop"
 maximal-distance: 5
 
 # Set the currency symbol after price values
-currency-symbol: $
+currency-symbol: J
 
 # Set whether the buy price must be greater than or equal sell price.
 buy-greater-or-equal-sell: true
@@ -152,7 +152,7 @@ messages:
   
   # Set the message when a player sold something to the players' shop.
   # Usable regex: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%, %CURRENCY-SYMBOL%, %PLAYER%
-  someone-sold: "&6%PLAYER% &asold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%%CURRENCY-SYMBOL%&a from your shop."
+  someone-sold: "&6%PLAYER% &asold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%%CURRENCY-SYMBOL%&a to your shop."
 
   # Set the message when the inventory is full when the player is buying something.
   not-enough-inventory-space: "&cNot enough space in inventory."

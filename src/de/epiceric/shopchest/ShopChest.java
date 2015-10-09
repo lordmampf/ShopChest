@@ -110,7 +110,7 @@ public class ShopChest extends JavaPlugin {
 
 		if (getServer().getPluginManager().getPlugin("MampfLib") != null) {
 			itemnames = new ItemNamesMampfLib();
-			logger.info("[ShopChest] using MampfLib Itemnames");
+			logger.info("using MampfLib Itemnames");
 		} else {
 			itemnames = new ItemNamesTextFile();
 		}

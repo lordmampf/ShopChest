@@ -430,7 +430,7 @@ public class InteractShop implements Listener {
 												shop.getVendor().getName()));
 										if (shop.getVendor().isOnline())
 											shop.getVendor().getPlayer().sendMessage(Config.someone_sold(product.getAmount(), ShopChest.itemnames.lookup(product),
-													shop.getBuyPrice(), executor.getName()));
+													shop.getSellPrice(), executor.getName()));
 										return;
 									}
 								}
