@@ -61,11 +61,11 @@ public class ShopChest extends JavaPlugin {
 
 	public static SQLite sqlite;
 
-	public static boolean isUpdateNeeded = false;
+	public static boolean mampflib = false;
 	public static String latestVersion = "";
 	public static String downloadLink = "";
 	public static InteractShop interactshop;
-
+	
 	public static Utils utils;
 
 	public static ShopChest getInstance() {
@@ -126,6 +126,7 @@ public class ShopChest extends JavaPlugin {
 
 		if (getServer().getPluginManager().getPlugin("MampfLib") != null) {
 			itemnames = new ItemNamesMampfLib();
+			mampflib = true;
 			logger.info("using MampfLib Itemnames");
 		} else {
 			itemnames = new ItemNamesTextFile();

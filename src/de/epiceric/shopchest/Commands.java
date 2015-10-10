@@ -16,6 +16,7 @@ import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.utils.ClickType;
 import de.epiceric.shopchest.utils.ClickType.EnumClickType;
 import de.epiceric.shopchest.utils.ShopUtils;
+import me.lordmampf.Lib.MaterialsHelper;
 import net.milkbowl.vault.permission.Permission;
 
 public class Commands extends BukkitCommand {
@@ -49,21 +50,41 @@ public class Commands extends BukkitCommand {
 				if (args[0].equalsIgnoreCase("create")) {
 					if (perm.has(p, "shopchest.create")) {
 						if (args.length == 4) {
-							create(args, false, p);
+							create(args, false, p, null);
 							return true;
-						} else if (args.length == 5) {
+						} else if (args.length >= 5) {
 							if (args[4].equalsIgnoreCase("infinite")) {
 								if (perm.has(p, "shopchest.create.infinite")) {
-									create(args, true, p);
+									create(args, true, p, null);
 									return true;
 								} else {
 									p.sendMessage(Config.noPermission_createInfinite());
 									return true;
 								}
 							} else if (args[4].equalsIgnoreCase("normal")) {
-								create(args, false, p);
+								create(args, false, p, null);
 								return true;
 							} else {
+								if (ShopChest.mampflib) {
+									ItemStack item = MaterialsHelper.getItemStackFromPlayerInput(args[4]);
+									if (item == null) {
+										p.sendMessage(ChatColor.DARK_RED + "I tried everything, but I couldn't find an item that fits to that name!");
+										return true;
+									}
+									boolean infinite = false;
+									if (args.length == 6) {
+										if (args[5].equalsIgnoreCase("infinite")) {
+											if (perm.has(p, "shopchest.create.infinite")) {
+												infinite = true;
+											} else {
+												p.sendMessage(Config.noPermission_createInfinite());
+												return true;
+											}
+										}
+									}
+									create(args, infinite, p, item);
+									return true;
+								}
 								sendBasicHelpMessage(p);
 								return true;
 							}
@@ -89,19 +110,6 @@ public class Commands extends BukkitCommand {
 						p.sendMessage(Config.noPermission_reload());
 						return true;
 					}
-				} else if (args[0].equalsIgnoreCase("update")) {
-					/*
-					 * if (perm.has(p, "shopchest.update")) {
-					 * checkUpdates(p);
-					 * return true;
-					 * } else {
-					 * p.sendMessage(Config.noPermission_update());
-					 * return true;
-					 * }
-					 */
-					p.sendMessage("cmd removed by mampf");
-					return true;
-
 				} else if (args[0].equalsIgnoreCase("limits")) {
 					if (perm.has(p, "shopchest.limits")) {
 						p.sendMessage(Config.occupied_shop_slots(ShopUtils.getShopLimit(p), ShopUtils.getShopAmount(p)));
@@ -127,7 +135,7 @@ public class Commands extends BukkitCommand {
 		ShopChest.utils.reload(player);
 	}
 
-	private void create(String[] args, boolean infinite, Player p) {
+	private void create(String[] args, boolean infinite, Player p, ItemStack pItem) {
 		int amount;
 		double buyPrice, sellPrice;
 
@@ -156,9 +164,13 @@ public class Commands extends BukkitCommand {
 			return;
 		}
 
-		if (p.getItemInHand().getType().equals(Material.AIR)) {
-			p.sendMessage(Config.no_item_in_hand());
-			return;
+		if (pItem == null) {
+			if (p.getItemInHand().getType().equals(Material.AIR)) {
+				p.sendMessage(Config.no_item_in_hand());
+				return;
+			}
+
+			pItem = p.getItemInHand();
 		}
 
 		for (String item : Config.blacklist()) {
@@ -169,7 +181,7 @@ public class Commands extends BukkitCommand {
 				itemStack = new ItemStack(Material.getMaterial(item), 1);
 			}
 
-			if (itemStack.getType().equals(p.getItemInHand().getType()) && itemStack.getDurability() == p.getItemInHand().getDurability()) {
+			if (itemStack.getType().equals(pItem.getType()) && itemStack.getDurability() == pItem.getDurability()) {
 				p.sendMessage(Config.cannot_sell_item());
 				return;
 			}
@@ -186,7 +198,7 @@ public class Commands extends BukkitCommand {
 				itemStack = new ItemStack(Material.getMaterial(key), 1);
 			}
 
-			if (itemStack.getType().equals(p.getItemInHand().getType()) && itemStack.getDurability() == p.getItemInHand().getDurability()) {
+			if (itemStack.getType().equals(pItem.getType()) && itemStack.getDurability() == pItem.getDurability()) {
 				if (buyEnabled) {
 					if ((buyPrice <= amount * price) && (buyPrice > 0)) {
 						p.sendMessage(Config.buyPrice_too_low(amount * price));
@@ -212,8 +224,8 @@ public class Commands extends BukkitCommand {
 			}
 		}
 
-		ItemStack itemStack = new ItemStack(p.getItemInHand().getType(), amount, p.getItemInHand().getDurability());
-		itemStack.setItemMeta(p.getItemInHand().getItemMeta());
+		ItemStack itemStack = new ItemStack(pItem.getType(), amount, pItem.getDurability());
+		itemStack.setItemMeta(pItem.getItemMeta());
 
 		if (Enchantment.DURABILITY.canEnchantItem(itemStack)) {
 			if (itemStack.getDurability() > 0) {
@@ -238,12 +250,11 @@ public class Commands extends BukkitCommand {
 
 	private void sendBasicHelpMessage(Player player) {
 
-		player.sendMessage(
-				ChatColor.GREEN + "/" + Config.main_command_name() + " create <amount> <buy-price> <sell-price> [infinite|normal]- " + Config.cmdDesc_create());
+		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " create <amount> <buy-price> <sell-price> [infinite|normal|itemname]- "
+				+ Config.cmdDesc_create());
 		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " remove - " + Config.cmdDesc_remove());
 		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " info - " + Config.cmdDesc_info());
 		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " reload - " + Config.cmdDesc_reload());
-		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " update - " + Config.cmdDesc_update());
 		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " limits - " + Config.cmdDesc_limits());
 
 	}
