@@ -195,31 +195,31 @@ public class ShopChest extends JavaPlugin {
 				@Override
 				public void onPacketReceiving(PacketEvent event) {
 					int entityid = event.getPacket().getIntegers().read(0);
-					for (Shop s : ShopUtils.getShops()) {
+					for (final Shop s : ShopUtils.getShops()) {
 						for (EntityArmorStand eas : s.getHologram().getEntities()) {
 							if (eas.getId() == entityid) {
 								EntityUseAction action = event.getPacket().getEntityUseActions().read(0);
 								Action baction = Action.RIGHT_CLICK_BLOCK;
-
 								if (action == EntityUseAction.ATTACK)
 									baction = Action.LEFT_CLICK_BLOCK;
 
+								final Action caction = baction;
 								final Player player = event.getPlayer();
 
-								PlayerInteractEvent pie = new PlayerInteractEvent(player, baction, null, s.getLocation().getBlock(), BlockFace.NORTH);
-								Bukkit.getServer().getPluginManager().callEvent(pie);
+								Bukkit.getScheduler().scheduleSyncDelayedTask(instance, new Runnable() {
+									@Override
+									public void run() {
+										PlayerInteractEvent pie = new PlayerInteractEvent(player, caction, null, s.getLocation().getBlock(), BlockFace.NORTH);
+										Bukkit.getServer().getPluginManager().callEvent(pie);
 
-								if (!pie.isCancelled()) {
-									final Chest c = (Chest) s.getLocation().getBlock().getState();
+										if (!pie.isCancelled()) {
+											final Chest c = (Chest) s.getLocation().getBlock().getState();
 
-									Bukkit.getScheduler().scheduleSyncDelayedTask(instance, new Runnable() {
-										@Override
-										public void run() {
 											player.closeInventory();
 											player.openInventory(c.getInventory());
 										}
-									}, 2L);
-								}
+									}
+								}, 2L);
 								return;
 							}
 						}

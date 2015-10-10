@@ -5,6 +5,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -12,6 +13,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -46,29 +48,43 @@ public class PlayerListener implements Listener {
 	}
 
 	@EventHandler(ignoreCancelled = true)
-	public void onInventoryMove(InventoryPickupItemEvent e) {
-		if (e.getItem() == null)
-			return;
-
-		List<MetadataValue> metas = e.getItem().getMetadata("shopItem");
-		if (metas != null && metas.size() > 0) {
-			e.setCancelled(true);
-			e.getItem().remove();
-		}
-		ItemStack is = e.getItem().getItemStack();
-		if (checkItem(is)) {
+	public void onInventoryPickupItemEvent(InventoryPickupItemEvent e) {
+		if (checkItemEntity(e.getItem())) {
 			e.setCancelled(true);
 			checkInventory(e.getInventory());
-			e.getItem().remove();
 		}
 	}
 
 	@EventHandler(ignoreCancelled = true)
-	public void onInventoryMove(final InventoryClickEvent e) {
+	public void onInventoryClickEvent(final InventoryClickEvent e) {
 		if (checkItem(e.getCurrentItem())) {
 			e.setCancelled(true);
 			checkInventory(e.getClickedInventory());
 		}
+	}
+
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+	public void onInventory(PlayerPickupItemEvent e) {
+		if (checkItemEntity(e.getItem())) {
+			e.setCancelled(true);
+			checkInventory(e.getPlayer().getInventory());
+		}
+	}
+
+	private boolean checkItemEntity(Item pItem) {
+		if (pItem == null)
+			return false;
+		List<MetadataValue> metas = pItem.getMetadata("shopItem");
+		if (metas != null && metas.size() > 0) {
+			pItem.remove();
+			return true;
+		}
+		ItemStack is = pItem.getItemStack();
+		if (checkItem(is)) {
+			pItem.remove();
+			return true;
+		}
+		return false;
 	}
 
 	private boolean checkItem(ItemStack pIs) {
@@ -104,7 +120,7 @@ public class PlayerListener implements Listener {
 				}
 				pInventory.setContents(content);
 			}
-		}, 10L);
+		}, 3L);
 	}
 
 }
