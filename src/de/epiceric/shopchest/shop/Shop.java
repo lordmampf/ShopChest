@@ -21,7 +21,6 @@ import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.interfaces.Hologram;
 import de.epiceric.shopchest.interfaces.Utils;
 import de.epiceric.shopchest.interfaces.hologram.Hologram_R3;
-import de.epiceric.shopchest.interfaces.itemnames.ItemNamesTextFile;
 
 public class Shop {
 

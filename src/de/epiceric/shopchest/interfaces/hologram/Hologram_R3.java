@@ -20,7 +20,7 @@ public class Hologram_R3 implements Hologram {
 	private String[] text;
 	private Location location;
 	private double DISTANCE = 0.25D;
-	int count;
+	private int count;
 
 	private HashMap<OfflinePlayer, Boolean> visible = new HashMap<OfflinePlayer, Boolean>();
 

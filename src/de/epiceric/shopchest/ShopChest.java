@@ -9,9 +9,24 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.Chest;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.ListenerPriority;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.wrappers.EnumWrappers.EntityUseAction;
 import com.griefcraft.lwc.LWC;
 import com.griefcraft.lwc.LWCPlugin;
 
@@ -32,6 +47,7 @@ import de.epiceric.shopchest.sql.SQLite;
 import de.epiceric.shopchest.utils.ShopUtils;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
+import net.minecraft.server.v1_8_R3.EntityArmorStand;
 
 public class ShopChest extends JavaPlugin {
 
@@ -49,6 +65,7 @@ public class ShopChest extends JavaPlugin {
 	public static boolean isUpdateNeeded = false;
 	public static String latestVersion = "";
 	public static String downloadLink = "";
+	public static InteractShop interactshop;
 
 	public static Utils utils;
 
@@ -161,12 +178,55 @@ public class ShopChest extends JavaPlugin {
 
 		initializeShops();
 
+		interactshop = new InteractShop(this);
+
 		getServer().getPluginManager().registerEvents(new UpdateHolograms(), this);
 		getServer().getPluginManager().registerEvents(new RegenerateShopItem(), this);
-		getServer().getPluginManager().registerEvents(new InteractShop(this), this);
+		getServer().getPluginManager().registerEvents(interactshop, this);
 		getServer().getPluginManager().registerEvents(new ProtectChest(), this);
 		getServer().getPluginManager().registerEvents(new ItemCustomNameListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+
+		if (getServer().getPluginManager().getPlugin("ProtocolLib") != null) {
+
+			ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
+
+			protocolManager.addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Client.USE_ENTITY) {
+				@Override
+				public void onPacketReceiving(PacketEvent event) {
+					int entityid = event.getPacket().getIntegers().read(0);
+					for (Shop s : ShopUtils.getShops()) {
+						for (EntityArmorStand eas : s.getHologram().getEntities()) {
+							if (eas.getId() == entityid) {
+								EntityUseAction action = event.getPacket().getEntityUseActions().read(0);
+								Action baction = Action.RIGHT_CLICK_BLOCK;
+
+								if (action == EntityUseAction.ATTACK)
+									baction = Action.LEFT_CLICK_BLOCK;
+
+								final Player player = event.getPlayer();
+
+								PlayerInteractEvent pie = new PlayerInteractEvent(player, baction, null, s.getLocation().getBlock(), BlockFace.NORTH);
+								Bukkit.getServer().getPluginManager().callEvent(pie);
+
+								if (!pie.isCancelled()) {
+									final Chest c = (Chest) s.getLocation().getBlock().getState();
+
+									Bukkit.getScheduler().scheduleSyncDelayedTask(instance, new Runnable() {
+										@Override
+										public void run() {
+											player.closeInventory();
+											player.openInventory(c.getInventory());
+										}
+									}, 2L);
+								}
+								return;
+							}
+						}
+					}
+				}
+			});
+		}
 	}
 
 	@Override
