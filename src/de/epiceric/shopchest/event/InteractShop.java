@@ -3,6 +3,8 @@ package de.epiceric.shopchest.event;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.naming.OperationNotSupportedException;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -220,149 +222,6 @@ public class InteractShop implements Listener {
 
 	}
 
-	/*
-	 * @EventHandler
-	 * public void onPlayerInteract(PlayerInteractEvent e) {
-	 * onInteract(e.getPlayer(), e.getClickedBlock(), e.getAction());
-	 * }
-	 * public boolean onInteract(Player pPlayer, Block pBlock, Action pAction) {
-	 * boolean cancel = false;
-	 * if (pAction == Action.RIGHT_CLICK_BLOCK || pAction == Action.LEFT_CLICK_BLOCK) {
-	 * if (pBlock.getType().equals(Material.CHEST) || pBlock.getType().equals(Material.TRAPPED_CHEST)) {
-	 * if (pAction == Action.RIGHT_CLICK_BLOCK) {
-	 * if (ClickType.getPlayerClickType(pPlayer) != null) {
-	 * switch (ClickType.getPlayerClickType(pPlayer).getClickType()) {
-	 * case CREATE:
-	 * cancel = true;
-	 * if (!pPlayer.isOp() || !perm.has(pPlayer, "shopchest.create.protected")) {
-	 * /*
-	 * if (ShopChest.lockette) {
-	 * if (Lockette.isProtected(b)) {
-	 * if (!Lockette.isOwner(b, p) || !Lockette.isUser(b, p, true)) {
-	 * ClickType.removePlayerClickType(p);
-	 * break;
-	 * }
-	 * }
-	 * }
-	 * if (ShopChest.lwc != null) {
-	 * if (ShopChest.lwc.getPhysicalDatabase().loadProtection(pBlock.getLocation().getWorld().getName(), pBlock.getX(), pBlock.getY(),
-	 * pBlock.getZ()) != null) {
-	 * Protection protection = ShopChest.lwc.getPhysicalDatabase().loadProtection(pBlock.getLocation().getWorld().getName(),
-	 * pBlock.getX(), pBlock.getY(), pBlock.getZ());
-	 * if (!protection.isOwner(pPlayer) || !protection.isRealOwner(pPlayer)) {
-	 * ClickType.removePlayerClickType(pPlayer);
-	 * break;
-	 * }
-	 * }
-	 * }
-	 * }
-	 * if (!ShopUtils.isShop(pBlock.getLocation())) {
-	 * ClickType clickType = ClickType.getPlayerClickType(pPlayer);
-	 * ItemStack product = clickType.getProduct();
-	 * double buyPrice = clickType.getBuyPrice();
-	 * double sellPrice = clickType.getSellPrice();
-	 * boolean infinite = clickType.isInfinite();
-	 * create(pPlayer, pBlock.getLocation(), product, buyPrice, sellPrice, infinite);
-	 * } else {
-	 * pPlayer.sendMessage(Config.chest_already_shop());
-	 * }
-	 * ClickType.removePlayerClickType(pPlayer);
-	 * break;
-	 * case INFO:
-	 * cancel = true;
-	 * if (ShopUtils.isShop(pBlock.getLocation())) {
-	 * Shop shop = ShopUtils.getShop(pBlock.getLocation());
-	 * info(pPlayer, shop);
-	 * } else {
-	 * pPlayer.sendMessage(Config.chest_no_shop());
-	 * }
-	 * ClickType.removePlayerClickType(pPlayer);
-	 * break;
-	 * case REMOVE:
-	 * cancel = true;
-	 * if (ShopUtils.isShop(pBlock.getLocation())) {
-	 * Shop shop = ShopUtils.getShop(pBlock.getLocation());
-	 * if (shop.getVendor().getUniqueId().equals(pPlayer.getUniqueId()) || perm.has(pPlayer, "shopchest.removeOther")) {
-	 * remove(pPlayer, shop);
-	 * } else {
-	 * pPlayer.sendMessage(Config.noPermission_removeOthers());
-	 * }
-	 * } else {
-	 * pPlayer.sendMessage(Config.chest_no_shop());
-	 * }
-	 * ClickType.removePlayerClickType(pPlayer);
-	 * break;
-	 * }
-	 * } else {
-	 * if (ShopUtils.isShop(pBlock.getLocation())) {
-	 * cancel = true;
-	 * Shop shop = ShopUtils.getShop(pBlock.getLocation());
-	 * if (pPlayer.getUniqueId().equals(shop.getVendor().getUniqueId())) {
-	 * return false;
-	 * } else {
-	 * if (pPlayer.isSneaking()) {
-	 * if (perm.has(pPlayer, "shopchest.openOther")) {
-	 * pPlayer.sendMessage(Config.opened_shop(shop.getVendor().getName()));
-	 * cancel = false;
-	 * } else {
-	 * pPlayer.sendMessage(Config.noPermission_openOthers());
-	 * cancel = true;
-	 * }
-	 * } else {
-	 * if (shop.getSellPrice() > 0) {
-	 * if (perm.has(pPlayer, "shopchest.sell")) {
-	 * if (Utils.getAmount(pPlayer.getInventory(), shop.getProduct().getType(), shop.getProduct().getDurability(),
-	 * shop.getProduct().getItemMeta()) >= shop.getProduct().getAmount()) {
-	 * sell(pPlayer, shop);
-	 * } else {
-	 * pPlayer.sendMessage(Config.not_enough_items());
-	 * }
-	 * } else {
-	 * pPlayer.sendMessage(Config.noPermission_sell());
-	 * }
-	 * } else {
-	 * pPlayer.sendMessage(Config.selling_disabled());
-	 * }
-	 * }
-	 * }
-	 * }
-	 * }
-	 * } else if (pAction == Action.LEFT_CLICK_BLOCK) {
-	 * if (ShopUtils.isShop(pBlock.getLocation())) {
-	 * Shop shop = ShopUtils.getShop(pBlock.getLocation());
-	 * if (!pPlayer.getUniqueId().equals(shop.getVendor().getUniqueId())) {
-	 * if (shop.getBuyPrice() > 0) {
-	 * cancel = true;
-	 * if (perm.has(pPlayer, "shopchest.buy")) {
-	 * if (shop.isInfinite()) {
-	 * buy(pPlayer, shop);
-	 * } else {
-	 * Chest c = (Chest) pBlock.getState();
-	 * if (Utils.getAmount(c.getInventory(), shop.getProduct().clone().getType(), shop.getProduct().clone().getDurability(),
-	 * shop.getProduct().getItemMeta()) >= shop.getProduct().getAmount()) {
-	 * buy(pPlayer, shop);
-	 * } else {
-	 * pPlayer.sendMessage(Config.out_of_stock());
-	 * }
-	 * }
-	 * } else {
-	 * pPlayer.sendMessage(Config.noPermission_buy());
-	 * }
-	 * } else {
-	 * pPlayer.sendMessage(Config.buying_disabled());
-	 * }
-	 * }
-	 * }
-	 * }
-	 * }
-	 * } else {
-	 * if (ClickType.getPlayerClickType(pPlayer) != null)
-	 * ClickType.removePlayerClickType(pPlayer);
-	 * }
-	 * return cancel;
-	 * }
-	 */
-
 	private void create(Player executor, Location location, ItemStack product, double buyPrice, double sellPrice, boolean infinite) {
 
 		Shop shop = new Shop(plugin, executor, product, location, buyPrice, sellPrice, infinite);
@@ -450,6 +309,7 @@ public class InteractShop implements Listener {
 			HashMap<Integer, Integer> slotFree = new HashMap<>();
 			ItemStack product = shop.getProduct().clone();
 			Inventory inventory = executor.getInventory();
+
 			for (int i = 0; i < 36; i++) {
 				ItemStack item = inventory.getItem(i);
 				if (item == null) {
@@ -469,6 +329,11 @@ public class InteractShop implements Listener {
 			int freeAmount = 0;
 			for (int value : slotFree.values()) {
 				freeAmount += value;
+			}
+
+			if (freeAmount < leftAmount) {
+				executor.sendMessage(Config.not_enough_inventory_space());
+				return;
 			}
 
 			EconomyResponse r = econ.withdrawPlayer(executor, shop.getBuyPrice());
@@ -502,8 +367,12 @@ public class InteractShop implements Listener {
 								}
 							}
 						}
+
 					} else {
 						executor.sendMessage(Config.not_enough_inventory_space());
+						for (int i = 0; i < 5; i++) {
+							Bukkit.getLogger().severe("FATAL ERROR: ShopChest Inventory algorithm");
+						}
 					}
 				} else {
 					executor.sendMessage(Config.error_occurred(r2.errorMessage));
@@ -528,7 +397,6 @@ public class InteractShop implements Listener {
 			Inventory inventory = chest.getInventory();
 
 			for (int i = 0; i < chest.getInventory().getSize(); i++) {
-
 				ItemStack item = inventory.getItem(i);
 				if (item == null) {
 					slotFree.put(i, product.getMaxStackSize());
@@ -546,6 +414,11 @@ public class InteractShop implements Listener {
 			int freeAmount = 0;
 			for (int value : slotFree.values()) {
 				freeAmount += value;
+			}
+
+			if (freeAmount < leftAmount) {
+				executor.sendMessage(Config.not_enough_inventory_space());
+				return;
 			}
 
 			EconomyResponse r = econ.withdrawPlayer(shop.getVendor(), shop.getSellPrice());
@@ -581,6 +454,9 @@ public class InteractShop implements Listener {
 						}
 					} else {
 						executor.sendMessage(Config.chest_not_enough_inventory_space());
+						for (int i = 0; i < 5; i++) {
+							Bukkit.getLogger().severe("FATAL ERROR: ShopChest Inventory algorithm");
+						}
 					}
 				} else {
 					executor.sendMessage(Config.error_occurred(r2.errorMessage));
