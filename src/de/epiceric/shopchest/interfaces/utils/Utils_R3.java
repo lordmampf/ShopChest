@@ -1,6 +1,10 @@
 package de.epiceric.shopchest.interfaces.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import de.epiceric.shopchest.ShopChest;
@@ -52,6 +56,8 @@ public class Utils_R3 extends Utils {
 
 	@Override
 	public void removeShops() {
+		List<String> worldsdone = new ArrayList<String>();
+
 		for (Shop shop : ShopUtils.getShops()) {
 			Hologram hologram = shop.getHologram();
 
@@ -64,7 +70,23 @@ public class Utils_R3 extends Utils {
 				e.getWorld().removeEntity(e);
 			}
 			shop.getItem().remove();
+
+			String world = shop.getLocation().getWorld().getName();
+
+			if (!worldsdone.contains(world)) {
+				List<Entity> toremove = new ArrayList<Entity>();
+				for (Entity entity : Bukkit.getWorld(world).getEntities()) {
+					if (entity.hasMetadata("shopItem")) {
+						toremove.add(entity);
+					}
+				}
+				for (Entity entity : toremove) {
+					entity.remove();
+				}
+				worldsdone.add(world);
+			}
 		}
+
 	}
 
 }
