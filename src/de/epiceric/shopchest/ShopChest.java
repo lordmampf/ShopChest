@@ -191,6 +191,7 @@ public class ShopChest extends JavaPlugin {
 
 			ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
 
+			/*
 			protocolManager.addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Client.USE_ENTITY) {
 				@Override
 				public void onPacketReceiving(PacketEvent event) {
@@ -226,6 +227,8 @@ public class ShopChest extends JavaPlugin {
 					}
 				}
 			});
+			*/
+
 		}
 	}
 
