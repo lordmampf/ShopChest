@@ -68,10 +68,8 @@ public class Shop {
 		this.item = item;
 	}
 
-	public void createHologram() {
-
+	public boolean createHologram() {
 		boolean doubleChest;
-
 		Chest[] chests = new Chest[2];
 
 		Block b = location.getBlock();
@@ -99,11 +97,11 @@ public class Shop {
 
 		} else {
 			try {
-				throw new Exception("No Chest found at specified Location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
+				ShopChest.logger.severe("No Chest found at specified Location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			return;
+			return false;
 		}
 
 		Location holoLocation;
@@ -148,14 +146,10 @@ public class Shop {
 		else
 			holoText[1] = Config.hologram_buy_sell(buyPrice, sellPrice);
 
-		switch (Utils.getVersion(plugin.getServer())) {
-		case "v1_8_R3":
+		if (Utils.getVersion(plugin.getServer()).equals("v1_8_R3")) {
 			hologram = new Hologram_R3(holoText, holoLocation);
-			break;
-		default:
-			return;
 		}
-
+		return true;
 	}
 
 	public OfflinePlayer getVendor() {

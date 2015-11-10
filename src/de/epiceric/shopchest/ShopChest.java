@@ -65,7 +65,7 @@ public class ShopChest extends JavaPlugin {
 	public static String latestVersion = "";
 	public static String downloadLink = "";
 	public static InteractShop interactshop;
-	
+
 	public static Utils utils;
 
 	public static ShopChest getInstance() {
@@ -191,44 +191,47 @@ public class ShopChest extends JavaPlugin {
 
 			ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
 
-			/*
 			protocolManager.addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Client.USE_ENTITY) {
 				@Override
-				public void onPacketReceiving(PacketEvent event) {
-					int entityid = event.getPacket().getIntegers().read(0);
-					for (final Shop s : ShopUtils.getShops()) {
-						for (EntityArmorStand eas : s.getHologram().getEntities()) {
-							if (eas.getId() == entityid) {
-								EntityUseAction action = event.getPacket().getEntityUseActions().read(0);
-								Action baction = Action.RIGHT_CLICK_BLOCK;
-								if (action == EntityUseAction.ATTACK)
-									baction = Action.LEFT_CLICK_BLOCK;
+				public void onPacketReceiving(final PacketEvent event) {
+					final int entityid = event.getPacket().getIntegers().read(0);
+					Bukkit.getScheduler().runTaskAsynchronously(instance, new Runnable() {
+						@Override
+						public void run() {
+							for (final Shop s : ShopUtils.getShops()) {
+								for (EntityArmorStand eas : s.getHologram().getEntities()) {
+									if (eas.getId() == entityid) {
+										EntityUseAction action = event.getPacket().getEntityUseActions().read(0);
+										Action baction = Action.RIGHT_CLICK_BLOCK;
+										if (action == EntityUseAction.ATTACK)
+											baction = Action.LEFT_CLICK_BLOCK;
 
-								final Action caction = baction;
-								final Player player = event.getPlayer();
+										final Action caction = baction;
+										final Player player = event.getPlayer();
 
-								Bukkit.getScheduler().scheduleSyncDelayedTask(instance, new Runnable() {
-									@Override
-									public void run() {
-										PlayerInteractEvent pie = new PlayerInteractEvent(player, caction, null, s.getLocation().getBlock(), BlockFace.NORTH);
-										Bukkit.getServer().getPluginManager().callEvent(pie);
+										Bukkit.getScheduler().scheduleSyncDelayedTask(instance, new Runnable() {
+											@Override
+											public void run() {
+												PlayerInteractEvent pie = new PlayerInteractEvent(player, caction, null, s.getLocation().getBlock(),
+														BlockFace.NORTH);
+												Bukkit.getServer().getPluginManager().callEvent(pie);
 
-										if (!pie.isCancelled()) {
-											final Chest c = (Chest) s.getLocation().getBlock().getState();
-
-											player.closeInventory();
-											player.openInventory(c.getInventory());
-										}
+												if (!pie.isCancelled()) {
+													final Chest c = (Chest) s.getLocation().getBlock().getState();
+													player.closeInventory();
+													player.openInventory(c.getInventory());
+												}
+											}
+										}, 2L);
+										return;
 									}
-								}, 2L);
-								return;
+								}
 							}
+
 						}
-					}
+					});
 				}
 			});
-			*/
-
 		}
 	}
 
@@ -241,13 +244,16 @@ public class ShopChest extends JavaPlugin {
 	private void initializeShops() {
 		int count = 0;
 		for (int id = 1; id < sqlite.getHighestID() + 1; id++) {
-
 			try {
 				Shop shop = sqlite.getShop(id);
-				shop.createHologram();
-				shop.createItem();
-				ShopUtils.addShop(shop);
-			} catch (NullPointerException e) {
+				if (shop.createHologram()) {
+					shop.createItem();
+					ShopUtils.addShop(shop);
+				} else {
+					sqlite.removeShop(shop); //Remove if chest not exists
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 				continue;
 			}
 			count++;
