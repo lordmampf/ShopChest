@@ -178,11 +178,9 @@ public class ShopChest extends JavaPlugin {
 
 		initializeShops();
 
-		interactshop = new InteractShop(this);
-
 		getServer().getPluginManager().registerEvents(new UpdateHolograms(), this);
 		getServer().getPluginManager().registerEvents(new RegenerateShopItem(), this);
-		getServer().getPluginManager().registerEvents(interactshop, this);
+		getServer().getPluginManager().registerEvents(new InteractShop(this), this);
 		getServer().getPluginManager().registerEvents(new ProtectChest(), this);
 		getServer().getPluginManager().registerEvents(new ItemCustomNameListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
@@ -250,7 +248,7 @@ public class ShopChest extends JavaPlugin {
 					shop.createItem();
 					ShopUtils.addShop(shop);
 				} else {
-					sqlite.removeShop(shop); //Remove if chest not exists
+					ShopUtils.removeShop(shop); //Remove if chest not exists
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

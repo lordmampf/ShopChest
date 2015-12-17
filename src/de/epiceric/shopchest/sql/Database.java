@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -11,12 +12,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.interfaces.Utils;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.utils.ShopUtils;
+import net.minecraft.server.v1_8_R3.EntityArmorStand;
 
 public abstract class Database {
 	ShopChest plugin;
@@ -100,9 +104,7 @@ public abstract class Database {
 	}
 
 	public int getShopID(Shop shop) {
-
 		for (int i = 1; i < getHighestID() + 1; i++) {
-
 			try {
 				Shop s = getShop(i);
 				if (s.getLocation().equals(shop.getLocation())) {
@@ -111,19 +113,14 @@ public abstract class Database {
 			} catch (NullPointerException ex) {
 				continue;
 			}
-
 		}
-
 		return 0;
 	}
 
 	public void removeShop(Shop shop) {
-
 		int id = getShopID(shop);
 		if (id == 0)
 			return;
-
-		shop.getItem().remove();
 
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -143,15 +140,6 @@ public abstract class Database {
 				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
 			}
 		}
-
-	}
-
-	public void removeShop(int id) {
-
-		if (id == 0)
-			return;
-		removeShop(getShop(id));
-
 	}
 
 	private World getWorld(int id) {

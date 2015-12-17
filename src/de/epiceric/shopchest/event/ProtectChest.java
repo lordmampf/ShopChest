@@ -54,12 +54,9 @@ public class ProtectChest implements Listener {
 						return;
 					}
 
-					shop.getItem().remove();
-
 					Shop newShop = new Shop(ShopChest.getInstance(), shop.getVendor(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(),
 							shop.getSellPrice(), shop.isInfinite());
 					ShopUtils.addShop(newShop);
-
 				}
 
 			}

@@ -45,7 +45,6 @@ public class Shop {
 	}
 
 	public void createItem() {
-
 		Item item;
 		Location itemLocation;
 		ItemStack itemStack;
@@ -108,12 +107,10 @@ public class Shop {
 		String[] holoText = new String[2];
 
 		if (doubleChest) {
-
 			Chest r = chests[0];
 			Chest l = chests[1];
 
 			if (b.getLocation().equals(r.getLocation())) {
-
 				if (r.getX() != l.getX())
 					holoLocation = new Location(b.getWorld(), b.getX(), b.getY() - 0.6, b.getZ() + 0.5);
 				else if (r.getZ() != l.getZ())
@@ -129,7 +126,6 @@ public class Shop {
 					holoLocation = new Location(b.getWorld(), b.getX() + 0.5, b.getY() - 0.6, b.getZ() + 1);
 				else
 					holoLocation = new Location(b.getWorld(), b.getX() + 0.5, b.getY() - 0.6, b.getZ() + 0.5);
-
 			}
 
 		} else

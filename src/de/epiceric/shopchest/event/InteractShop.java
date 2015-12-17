@@ -238,17 +238,8 @@ public class InteractShop implements Listener {
 	}
 
 	private void remove(Player executor, Shop shop) {
-
 		ShopUtils.removeShop(shop);
-
-		sqlite.removeShop(shop);
-
-		for (Player player : plugin.getServer().getOnlinePlayers()) {
-			shop.getHologram().hidePlayer(player);
-		}
-
 		executor.sendMessage(Config.shop_removed());
-
 	}
 
 	private void info(Player executor, Shop shop) {
@@ -415,7 +406,7 @@ public class InteractShop implements Listener {
 			}
 
 			if (freeAmount < leftAmount) {
-				executor.sendMessage(Config.not_enough_inventory_space());
+				executor.sendMessage(Config.chest_not_enough_inventory_space());
 				return;
 			}
 

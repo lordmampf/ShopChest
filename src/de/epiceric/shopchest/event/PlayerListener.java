@@ -27,19 +27,8 @@ public class PlayerListener implements Listener {
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
 	public void onBlockPlace(BlockPlaceEvent e) {
 		Location loc = e.getBlockPlaced().getLocation();
-		if (ShopUtils.isShop(loc.clone().add(0, 0, 1))) {
-			e.setCancelled(true);
-			return;
-		}
-		if (ShopUtils.isShop(loc.clone().add(0, 0, -1))) {
-			e.setCancelled(true);
-			return;
-		}
-		if (ShopUtils.isShop(loc.clone().add(1, 0, 0))) {
-			e.setCancelled(true);
-			return;
-		}
-		if (ShopUtils.isShop(loc.clone().add(-1, 0, 0))) {
+		if (ShopUtils.isShop(loc.clone().add(0, 0, 1)) || ShopUtils.isShop(loc.clone().add(0, 0, -1)) || ShopUtils.isShop(loc.clone().add(1, 0, 0))
+				|| ShopUtils.isShop(loc.clone().add(-1, 0, 0))) {
 			e.setCancelled(true);
 			return;
 		}

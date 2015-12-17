@@ -12,9 +12,6 @@ import de.epiceric.shopchest.utils.ShopUtils;
 
 public class UpdateHolograms implements Listener {
 
-	public UpdateHolograms() {
-	}
-
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent e) {
 		Player p = e.getPlayer();

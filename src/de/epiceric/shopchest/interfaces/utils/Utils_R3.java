@@ -28,6 +28,7 @@ public class Utils_R3 extends Utils {
 			}
 			for (Object o : hologram.getEntities()) {
 				EntityArmorStand e = (EntityArmorStand) o;
+				e.die();
 				e.getWorld().removeEntity(e);
 			}
 		}
@@ -69,7 +70,8 @@ public class Utils_R3 extends Utils {
 				EntityArmorStand e = (EntityArmorStand) o;
 				e.getWorld().removeEntity(e);
 			}
-			shop.getItem().remove();
+			if (shop.getItem() != null)
+				shop.getItem().remove();
 
 			String world = shop.getLocation().getWorld().getName();
 

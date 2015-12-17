@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -19,6 +20,7 @@ import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.interfaces.Utils;
 import de.epiceric.shopchest.shop.Shop;
+import net.minecraft.server.v1_8_R3.EntityArmorStand;
 
 public class ShopUtils {
 
@@ -47,7 +49,6 @@ public class ShopUtils {
 	}
 
 	public static void addShop(Shop shop) {
-
 		Location loc = shop.getLocation();
 		Block b = loc.getBlock();
 		if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
@@ -68,6 +69,19 @@ public class ShopUtils {
 	}
 
 	public static void removeShop(Shop shop) {
+		ShopChest.sqlite.removeShop(shop);
+
+		if (shop.getItem() != null)
+			shop.getItem().remove();
+
+		if (shop.getHologram() != null) {
+			for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+				shop.getHologram().hidePlayer(player);
+			}
+			List<EntityArmorStand> entites = shop.getHologram().getEntities();
+			for (EntityArmorStand as : entites)
+				as.die();
+		}
 
 		Location loc = shop.getLocation();
 		Block b = loc.getBlock();
@@ -78,7 +92,6 @@ public class ShopUtils {
 				DoubleChest dc = (DoubleChest) ih;
 				Chest r = (Chest) dc.getRightSide();
 				Chest l = (Chest) dc.getLeftSide();
-				shop.getItem().remove();
 				shopLocation.remove(r.getLocation());
 				shopLocation.remove(l.getLocation());
 				return;
@@ -86,7 +99,6 @@ public class ShopUtils {
 		}
 
 		shopLocation.remove(shop.getLocation());
-
 	}
 
 	public static String getConfigTitle(Location location) {

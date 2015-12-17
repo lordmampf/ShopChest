@@ -9,9 +9,6 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 
 public class RegenerateShopItem implements Listener {
 
-	public RegenerateShopItem() {
-	}
-
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onItemDespawn(ItemDespawnEvent e) {
 		Item item = e.getEntity();
