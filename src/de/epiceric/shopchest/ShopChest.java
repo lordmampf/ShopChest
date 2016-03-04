@@ -10,22 +10,10 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.Chest;
-import org.bukkit.entity.Player;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.ListenerPriority;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.wrappers.EnumWrappers.EntityUseAction;
 import com.griefcraft.lwc.LWC;
 import com.griefcraft.lwc.LWCPlugin;
 
@@ -37,16 +25,14 @@ import de.epiceric.shopchest.event.ProtectChest;
 import de.epiceric.shopchest.event.RegenerateShopItem;
 import de.epiceric.shopchest.event.UpdateHolograms;
 import de.epiceric.shopchest.interfaces.ItemNames;
-import de.epiceric.shopchest.interfaces.Utils;
 import de.epiceric.shopchest.interfaces.itemnames.ItemNamesMampfLib;
 import de.epiceric.shopchest.interfaces.itemnames.ItemNamesTextFile;
-import de.epiceric.shopchest.interfaces.utils.Utils_R3;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.sql.SQLite;
 import de.epiceric.shopchest.utils.ShopUtils;
+import de.epiceric.shopchest.utils.Utils;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
-import net.minecraft.server.v1_8_R3.EntityArmorStand;
 
 public class ShopChest extends JavaPlugin {
 
@@ -105,6 +91,7 @@ public class ShopChest extends JavaPlugin {
 		sqlite = new SQLite(this);
 		sqlite.load();
 
+		/*
 		switch (Utils.getVersion(getServer())) {
 		case "v1_8_R3":
 			utils = new Utils_R3();
@@ -113,7 +100,10 @@ public class ShopChest extends JavaPlugin {
 			logger.severe("Incompatible Server Version!");
 			getServer().getPluginManager().disablePlugin(this);
 			return;
-		}
+		}*/
+		utils = new Utils();
+		
+		
 
 		if (getServer().getPluginManager().getPlugin("LWC") != null) {
 			Plugin lwcp = getServer().getPluginManager().getPlugin("LWC");
@@ -187,49 +177,7 @@ public class ShopChest extends JavaPlugin {
 
 		if (getServer().getPluginManager().getPlugin("ProtocolLib") != null) {
 
-			ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
-
-			protocolManager.addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Client.USE_ENTITY) {
-				@Override
-				public void onPacketReceiving(final PacketEvent event) {
-					final int entityid = event.getPacket().getIntegers().read(0);
-					Bukkit.getScheduler().runTaskAsynchronously(instance, new Runnable() {
-						@Override
-						public void run() {
-							for (final Shop s : ShopUtils.getShops()) {
-								for (EntityArmorStand eas : s.getHologram().getEntities()) {
-									if (eas.getId() == entityid) {
-										EntityUseAction action = event.getPacket().getEntityUseActions().read(0);
-										Action baction = Action.RIGHT_CLICK_BLOCK;
-										if (action == EntityUseAction.ATTACK)
-											baction = Action.LEFT_CLICK_BLOCK;
-
-										final Action caction = baction;
-										final Player player = event.getPlayer();
-
-										Bukkit.getScheduler().scheduleSyncDelayedTask(instance, new Runnable() {
-											@Override
-											public void run() {
-												PlayerInteractEvent pie = new PlayerInteractEvent(player, caction, null, s.getLocation().getBlock(),
-														BlockFace.NORTH);
-												Bukkit.getServer().getPluginManager().callEvent(pie);
-
-												if (!pie.isCancelled()) {
-													final Chest c = (Chest) s.getLocation().getBlock().getState();
-													player.closeInventory();
-													player.openInventory(c.getInventory());
-												}
-											}
-										}, 2L);
-										return;
-									}
-								}
-							}
-
-						}
-					});
-				}
-			});
+			
 		}
 	}
 
@@ -244,6 +192,12 @@ public class ShopChest extends JavaPlugin {
 		for (int id = 1; id < sqlite.getHighestID() + 1; id++) {
 			try {
 				Shop shop = sqlite.getShop(id);
+				if (shop.getLocation() == null || shop.getLocation().getWorld() == null
+						|| Bukkit.getServer().getWorld(shop.getLocation().getWorld().getName()) == null) {
+					logger.info("world of a shop dosn't exists -shop removed");
+					ShopUtils.removeShop(shop);
+					continue;
+				}
 				if (shop.createHologram()) {
 					shop.createItem();
 					ShopUtils.addShop(shop);

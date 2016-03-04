@@ -18,9 +18,7 @@ import org.bukkit.inventory.InventoryHolder;
 
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
-import de.epiceric.shopchest.interfaces.Utils;
 import de.epiceric.shopchest.shop.Shop;
-import net.minecraft.server.v1_8_R3.EntityArmorStand;
 
 public class ShopUtils {
 
@@ -78,23 +76,23 @@ public class ShopUtils {
 			for (Player player : Bukkit.getServer().getOnlinePlayers()) {
 				shop.getHologram().hidePlayer(player);
 			}
-			List<EntityArmorStand> entites = shop.getHologram().getEntities();
-			for (EntityArmorStand as : entites)
-				as.die();
+			shop.getHologram().killAllEntities();
 		}
 
 		Location loc = shop.getLocation();
-		Block b = loc.getBlock();
-		if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
-			Chest c = (Chest) b.getState();
-			InventoryHolder ih = c.getInventory().getHolder();
-			if (ih instanceof DoubleChest) {
-				DoubleChest dc = (DoubleChest) ih;
-				Chest r = (Chest) dc.getRightSide();
-				Chest l = (Chest) dc.getLeftSide();
-				shopLocation.remove(r.getLocation());
-				shopLocation.remove(l.getLocation());
-				return;
+		if (loc != null && loc.getWorld() != null) {
+			Block b = loc.getBlock();
+			if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
+				Chest c = (Chest) b.getState();
+				InventoryHolder ih = c.getInventory().getHolder();
+				if (ih instanceof DoubleChest) {
+					DoubleChest dc = (DoubleChest) ih;
+					Chest r = (Chest) dc.getRightSide();
+					Chest l = (Chest) dc.getLeftSide();
+					shopLocation.remove(r.getLocation());
+					shopLocation.remove(l.getLocation());
+					return;
+				}
 			}
 		}
 

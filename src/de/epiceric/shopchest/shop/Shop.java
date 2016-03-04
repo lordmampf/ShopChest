@@ -19,8 +19,9 @@ import org.bukkit.util.Vector;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.interfaces.Hologram;
-import de.epiceric.shopchest.interfaces.Utils;
+import de.epiceric.shopchest.interfaces.hologram.Hologram_R1;
 import de.epiceric.shopchest.interfaces.hologram.Hologram_R3;
+import de.epiceric.shopchest.utils.Utils;
 
 public class Shop {
 
@@ -144,7 +145,10 @@ public class Shop {
 
 		if (Utils.getVersion(plugin.getServer()).equals("v1_8_R3")) {
 			hologram = new Hologram_R3(holoText, holoLocation);
+		} else {
+			hologram = new Hologram_R1(holoText, holoLocation); //1.9 R1
 		}
+
 		return true;
 	}
 

@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -12,15 +11,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
 import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.interfaces.Utils;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.utils.ShopUtils;
-import net.minecraft.server.v1_8_R3.EntityArmorStand;
+import de.epiceric.shopchest.utils.Utils;
 
 public abstract class Database {
 	ShopChest plugin;
