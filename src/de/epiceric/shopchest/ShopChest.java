@@ -92,18 +92,17 @@ public class ShopChest extends JavaPlugin {
 		sqlite.load();
 
 		/*
-		switch (Utils.getVersion(getServer())) {
-		case "v1_8_R3":
-			utils = new Utils_R3();
-			break;
-		default:
-			logger.severe("Incompatible Server Version!");
-			getServer().getPluginManager().disablePlugin(this);
-			return;
-		}*/
+		 * switch (Utils.getVersion(getServer())) {
+		 * case "v1_8_R3":
+		 * utils = new Utils_R3();
+		 * break;
+		 * default:
+		 * logger.severe("Incompatible Server Version!");
+		 * getServer().getPluginManager().disablePlugin(this);
+		 * return;
+		 * }
+		 */
 		utils = new Utils();
-		
-		
 
 		if (getServer().getPluginManager().getPlugin("LWC") != null) {
 			Plugin lwcp = getServer().getPluginManager().getPlugin("LWC");
@@ -177,7 +176,6 @@ public class ShopChest extends JavaPlugin {
 
 		if (getServer().getPluginManager().getPlugin("ProtocolLib") != null) {
 
-			
 		}
 	}
 
@@ -192,17 +190,24 @@ public class ShopChest extends JavaPlugin {
 		for (int id = 1; id < sqlite.getHighestID() + 1; id++) {
 			try {
 				Shop shop = sqlite.getShop(id);
+				if (shop == null)
+					continue;
+
 				if (shop.getLocation() == null || shop.getLocation().getWorld() == null
 						|| Bukkit.getServer().getWorld(shop.getLocation().getWorld().getName()) == null) {
-					logger.info("world of a shop dosn't exists -shop removed");
-					ShopUtils.removeShop(shop);
+					String world = "";
+					if (shop.getLocation() != null && shop.getLocation().getWorld() != null)
+						world = shop.getLocation().getWorld().getName();
+					logger.info("shop with id " + id + " world " + world + " of a shop dosn't exists -shop removed");
+					ShopUtils.removeShop(shop, id);
 					continue;
 				}
 				if (shop.createHologram()) {
 					shop.createItem();
 					ShopUtils.addShop(shop);
 				} else {
-					ShopUtils.removeShop(shop); //Remove if chest not exists
+					logger.info("shop with id " + id + " chest not exists " + shop.getLocation().toString() + " -shop removed");
+					ShopUtils.removeShop(shop, id); //Remove if chest not exists
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

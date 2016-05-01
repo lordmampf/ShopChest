@@ -66,6 +66,11 @@ public class ShopUtils {
 
 	}
 
+	public static void removeShop(Shop shop, int pId) {
+		ShopChest.sqlite.removeShop(pId);
+		removeShop(shop);
+	}
+
 	public static void removeShop(Shop shop) {
 		ShopChest.sqlite.removeShop(shop);
 

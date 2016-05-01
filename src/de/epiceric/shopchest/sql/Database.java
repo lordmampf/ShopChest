@@ -103,6 +103,8 @@ public abstract class Database {
 		for (int i = 1; i < getHighestID() + 1; i++) {
 			try {
 				Shop s = getShop(i);
+				if (s == null)
+					continue;
 				if (s.getLocation().equals(shop.getLocation())) {
 					return i;
 				}
@@ -123,6 +125,27 @@ public abstract class Database {
 		try {
 			conn = getSQLConnection();
 			ps = conn.prepareStatement("DELETE FROM " + table + " where id = " + id + ";");
+			ps.executeUpdate();
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+		} finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (conn != null)
+					conn.close();
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+			}
+		}
+	}
+
+	public void removeShop(int pId) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		try {
+			conn = getSQLConnection();
+			ps = conn.prepareStatement("DELETE FROM " + table + " where id = " + pId + ";");
 			ps.executeUpdate();
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
@@ -406,6 +429,8 @@ public abstract class Database {
 
 	public Shop getShop(int id) {
 		OfflinePlayer vendor = getVendor(id);
+		if (vendor == null)
+			return null;
 		Location location = getLocation(id);
 		ItemStack product = getProduct(id);
 		double buyPrice = getBuyPrice(id);

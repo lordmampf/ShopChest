@@ -37,6 +37,8 @@ public class Utils {
 		for (int id = 1; id < ShopChest.sqlite.getHighestID() + 1; id++) {
 			try {
 				Shop shop = ShopChest.sqlite.getShop(id);
+				if (shop == null)
+					continue;
 				shop.createHologram();
 				shop.createItem();
 				ShopUtils.addShop(shop);
