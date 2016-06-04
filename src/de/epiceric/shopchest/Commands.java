@@ -165,12 +165,12 @@ public class Commands extends BukkitCommand {
 		}
 
 		if (pItem == null) {
-			if (p.getItemInHand().getType().equals(Material.AIR)) {
+			if (p.getInventory().getItemInMainHand() == null || p.getInventory().getItemInMainHand().getType().equals(Material.AIR)) {
 				p.sendMessage(Config.no_item_in_hand());
 				return;
 			}
 
-			pItem = p.getItemInHand();
+			pItem = p.getInventory().getItemInMainHand();
 		}
 
 		for (String item : Config.blacklist()) {

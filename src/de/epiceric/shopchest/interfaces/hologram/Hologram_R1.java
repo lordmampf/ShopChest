@@ -6,13 +6,13 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_9_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 
 import de.epiceric.shopchest.interfaces.Hologram;
-import net.minecraft.server.v1_9_R1.EntityArmorStand;
-import net.minecraft.server.v1_9_R1.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_9_R1.PacketPlayOutSpawnEntityLiving;
+import net.minecraft.server.v1_9_R2.EntityArmorStand;
+import net.minecraft.server.v1_9_R2.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_9_R2.PacketPlayOutSpawnEntityLiving;
 
 public class Hologram_R1 implements Hologram {
 
