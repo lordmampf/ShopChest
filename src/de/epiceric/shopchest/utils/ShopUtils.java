@@ -16,6 +16,11 @@ import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.bukkit.RegionContainer;
+import com.sk89q.worldguard.bukkit.RegionQuery;
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
+
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.shop.Shop;
@@ -172,6 +177,22 @@ public class ShopUtils {
 				shopCount++;
 		}
 		return shopCount;
+	}
+
+	public static boolean canAccessChest(Player pPlayer, Block pBlock) {
+		if (ShopChest.worldguard != null) {
+			LocalPlayer localPlayer = ShopChest.worldguard.wrapPlayer(pPlayer);
+			RegionContainer container = ShopChest.worldguard.getRegionContainer();
+			RegionQuery query = container.createQuery();
+
+			if (!query.testState(pBlock.getLocation(), localPlayer, DefaultFlag.CHEST_ACCESS))
+				return false;
+		}
+
+		if (ShopChest.lwc != null && !ShopChest.lwc.canAccessProtection(pPlayer, pBlock))
+			return false;
+
+		return true;
 	}
 
 }

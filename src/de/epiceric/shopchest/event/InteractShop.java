@@ -81,27 +81,9 @@ public class InteractShop implements Listener {
 								 * }
 								 */
 
-								if (ShopChest.worldguard != null) {
-									LocalPlayer localPlayer = ShopChest.worldguard.wrapPlayer(p);
-									RegionContainer container = ShopChest.worldguard.getRegionContainer();
-									RegionQuery query = container.createQuery();
-
-									if (!query.testState(b.getLocation(), localPlayer, DefaultFlag.CHEST_ACCESS)) {
-										ClickType.removePlayerClickType(p);
-										break;
-									}
-								}
-								
-								if (ShopChest.lwc != null) {
-									Protection protection = ShopChest.lwc.getPhysicalDatabase().loadProtection(b.getLocation().getWorld().getName(), b.getX(),
-											b.getY(), b.getZ());
-
-									if (protection != null) {
-										if (!ShopChest.lwc.canAccessProtection(p, b)) {
-											ClickType.removePlayerClickType(p);
-											break;
-										}
-									}
+								if (!ShopUtils.canAccessChest(p, b)) {
+									ClickType.removePlayerClickType(p);
+									break;
 								}
 							}
 
@@ -139,24 +121,20 @@ public class InteractShop implements Listener {
 							e.setCancelled(true);
 
 							if (ShopUtils.isShop(b.getLocation())) {
-
 								Shop shop = ShopUtils.getShop(b.getLocation());
 
-								if (shop.getVendor().getUniqueId().equals(p.getUniqueId()) || perm.has(p, "shopchest.removeOther")) {
+								if (ShopUtils.canAccessChest(p, b)) {
 									remove(p, shop);
 								} else {
 									p.sendMessage(Config.noPermission_removeOthers());
 								}
-
 							} else {
 								p.sendMessage(Config.chest_no_shop());
 							}
 
 							ClickType.removePlayerClickType(p);
 							break;
-
 						}
-
 					} else {
 
 						if (ShopUtils.isShop(b.getLocation())) {
@@ -173,19 +151,7 @@ public class InteractShop implements Listener {
 										p.sendMessage(Config.opened_shop(shop.getVendor().getName()));
 										e.setCancelled(false);
 									} else {
-										if (ShopChest.worldguard != null) {
-											LocalPlayer localPlayer = ShopChest.worldguard.wrapPlayer(p);
-											RegionContainer container = ShopChest.worldguard.getRegionContainer();
-											RegionQuery query = container.createQuery();
-
-											if (!query.testState(b.getLocation(), localPlayer, DefaultFlag.CHEST_ACCESS)) {
-												p.sendMessage(Config.noPermission_openOthers());
-												e.setCancelled(true);
-												return;
-											}
-										}
-
-										if (ShopChest.lwc != null && !ShopChest.lwc.canAccessProtection(p, b)) {
+										if (!ShopUtils.canAccessChest(p, b)) {
 											p.sendMessage(Config.noPermission_openOthers());
 											e.setCancelled(true);
 											return;
