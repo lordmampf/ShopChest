@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -19,6 +20,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import com.griefcraft.model.Protection;
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.bukkit.RegionContainer;
+import com.sk89q.worldguard.bukkit.RegionQuery;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.flags.StateFlag.State;
 
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
@@ -73,12 +80,24 @@ public class InteractShop implements Listener {
 								 * }
 								 * }
 								 */
+
+								if (ShopChest.worldguard != null) {
+									LocalPlayer localPlayer = ShopChest.worldguard.wrapPlayer(p);
+									RegionContainer container = ShopChest.worldguard.getRegionContainer();
+									RegionQuery query = container.createQuery();
+
+									if (!query.testState(b.getLocation(), localPlayer, DefaultFlag.CHEST_ACCESS)) {
+										ClickType.removePlayerClickType(p);
+										break;
+									}
+								}
+								
 								if (ShopChest.lwc != null) {
-									if (ShopChest.lwc.getPhysicalDatabase().loadProtection(b.getLocation().getWorld().getName(), b.getX(), b.getY(),
-											b.getZ()) != null) {
-										Protection protection = ShopChest.lwc.getPhysicalDatabase().loadProtection(b.getLocation().getWorld().getName(), b.getX(),
-												b.getY(), b.getZ());
-										if (!protection.isOwner(p) || !protection.isRealOwner(p)) {
+									Protection protection = ShopChest.lwc.getPhysicalDatabase().loadProtection(b.getLocation().getWorld().getName(), b.getX(),
+											b.getY(), b.getZ());
+
+									if (protection != null) {
+										if (!ShopChest.lwc.canAccessProtection(p, b)) {
 											ClickType.removePlayerClickType(p);
 											break;
 										}
@@ -153,10 +172,27 @@ public class InteractShop implements Listener {
 									if (perm.has(p, "shopchest.openOther")) {
 										p.sendMessage(Config.opened_shop(shop.getVendor().getName()));
 										e.setCancelled(false);
-
 									} else {
-										p.sendMessage(Config.noPermission_openOthers());
-										e.setCancelled(true);
+										if (ShopChest.worldguard != null) {
+											LocalPlayer localPlayer = ShopChest.worldguard.wrapPlayer(p);
+											RegionContainer container = ShopChest.worldguard.getRegionContainer();
+											RegionQuery query = container.createQuery();
+
+											if (!query.testState(b.getLocation(), localPlayer, DefaultFlag.CHEST_ACCESS)) {
+												p.sendMessage(Config.noPermission_openOthers());
+												e.setCancelled(true);
+												return;
+											}
+										}
+
+										if (ShopChest.lwc != null && !ShopChest.lwc.canAccessProtection(p, b)) {
+											p.sendMessage(Config.noPermission_openOthers());
+											e.setCancelled(true);
+											return;
+										}
+
+										p.sendMessage(Config.opened_shop(shop.getVendor().getName()));
+										e.setCancelled(false);
 									}
 								} else {
 

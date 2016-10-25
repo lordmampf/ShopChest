@@ -6,7 +6,7 @@ version: 1.6.0.1
 author: EpicEric
 website: https://www.spigotmc.org/resources/shopchest.11431/
 depend: [Vault]
-softdepend: [ClearLag, LWC, MampfLib, ProtocolLib]
+softdepend: [ClearLag, LWC, MampfLib, ProtocolLib, WorldGuard]
 loadbefore: [ItemTags]
 
 permissions:

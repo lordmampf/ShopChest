@@ -16,6 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.griefcraft.lwc.LWC;
 import com.griefcraft.lwc.LWCPlugin;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.event.InteractShop;
@@ -54,6 +55,8 @@ public class ShopChest extends JavaPlugin {
 
 	public static Utils utils;
 
+	public static WorldGuardPlugin worldguard;
+
 	public static ShopChest getInstance() {
 		return instance;
 	}
@@ -91,25 +94,16 @@ public class ShopChest extends JavaPlugin {
 		sqlite = new SQLite(this);
 		sqlite.load();
 
-		/*
-		 * switch (Utils.getVersion(getServer())) {
-		 * case "v1_8_R3":
-		 * utils = new Utils_R3();
-		 * break;
-		 * default:
-		 * logger.severe("Incompatible Server Version!");
-		 * getServer().getPluginManager().disablePlugin(this);
-		 * return;
-		 * }
-		 */
 		utils = new Utils();
 
 		if (getServer().getPluginManager().getPlugin("LWC") != null) {
 			Plugin lwcp = getServer().getPluginManager().getPlugin("LWC");
 			lwc = ((LWCPlugin) lwcp).getLWC();
-		} else {
-			lwc = null;
 		}
+
+		final Plugin worldGuardPlugin = Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
+		if (worldGuardPlugin instanceof WorldGuardPlugin)
+			worldguard = (WorldGuardPlugin) worldGuardPlugin;
 
 		setupPermissions();
 
@@ -120,33 +114,6 @@ public class ShopChest extends JavaPlugin {
 		} else {
 			itemnames = new ItemNamesTextFile();
 		}
-
-		/*
-		 * UpdateChecker uc = new UpdateChecker(this, getDescription().getWebsite());
-		 * logger.info("Checking for Updates");
-		 * if(uc.updateNeeded()) {
-		 * latestVersion = uc.getVersion();
-		 * downloadLink = uc.getLink();
-		 * isUpdateNeeded = true;
-		 * Bukkit.getConsoleSender().sendMessage("[ShopChest] " + ChatColor.GOLD + "New version available: " + ChatColor.RED + latestVersion);
-		 * } else {
-		 * logger.info("No new version available");
-		 * isUpdateNeeded = false;
-		 * }
-		 * if (isUpdateNeeded) {
-		 * for (Player p : getServer().getOnlinePlayers()) {
-		 * if (p.isOp() || perm.has(p, "shopchest.notification.update")) {
-		 * JsonBuilder jb;
-		 * switch (Utils.getVersion(getServer())) {
-		 * case "v1_8_R3": jb = new JsonBuilder_R3(Config.update_available(latestVersion)).withHoverEvent(HoverAction.SHOW_TEXT,
-		 * Config.click_to_download()).withClickEvent(ClickAction.OPEN_URL, downloadLink); break;
-		 * default: return;
-		 * }
-		 * jb.sendJson(p);
-		 * }
-		 * }
-		 * }
-		 */
 
 		File itemNamesFile = new File(getDataFolder(), "item_names.txt");
 
@@ -161,6 +128,7 @@ public class ShopChest extends JavaPlugin {
 
 		try {
 			Commands.registerCommand(new Commands(this, Config.main_command_name(), "Manage Shops.", "", new ArrayList<String>()), this);
+			Commands.registerCommand(new Commands(this, "pshop", "Manage Shops.", "", new ArrayList<String>()), this);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
